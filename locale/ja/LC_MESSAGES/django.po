@@ -1,0 +1,190 @@
+# Japanese translations for CalBol.
+# Copyright (C) 2024 CalBol
+# This file is distributed under the same license as the CalBol package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: CalBol 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-17 16:26+0900\n"
+"PO-Revision-Date: 2026-03-17 16:30+0900\n"
+"Last-Translator: CalBol Team\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: .\config\settings.py:166
+msgid "English"
+msgstr "English"
+
+#: .\config\settings.py:167
+msgid "Japanese"
+msgstr "日本語"
+
+#: .\templates\auth\login.html:4
+msgid "Login"
+msgstr "ログイン"
+
+#: .\templates\auth\login.html:31
+msgid "Auto-reply assistant for busy professionals"
+msgstr "忙しいプロフェッショナルのための自動返信アシスタント"
+
+#: .\templates\auth\login.html:32
+msgid "Sign in to your account"
+msgstr "アカウントにログイン"
+
+#: .\templates\auth\login.html:51
+msgid "Email address"
+msgstr "メールアドレス"
+
+#: .\templates\auth\login.html:62
+msgid "Password"
+msgstr "パスワード"
+
+#: .\templates\auth\login.html:76
+msgid "Remember me"
+msgstr "ログイン状態を保持"
+
+#: .\templates\auth\login.html:80
+msgid "Forgot password?"
+msgstr "パスワードをお忘れですか？"
+
+#: .\templates\auth\login.html:87
+msgid "Sign in"
+msgstr "ログイン"
+
+#: .\templates\auth\login.html:93
+msgid "Don't have an account?"
+msgstr "アカウントをお持ちでないですか？"
+
+#: .\templates\auth\login.html:95
+msgid "Create one for free"
+msgstr "無料で作成"
+
+#: .\templates\dashboard\base.html:11
+msgid "Auto-Reply Assistant"
+msgstr "自動返信アシスタント"
+
+#: .\templates\dashboard\base.html:22 .\templates\dashboard\base.html:110
+#: .\templates\dashboard\home.html:4
+msgid "Dashboard"
+msgstr "ダッシュボード"
+
+#: .\templates\dashboard\base.html:31 .\templates\dashboard\home.html:36
+msgid "Conversations"
+msgstr "会話"
+
+#: .\templates\dashboard\base.html:40
+msgid "Predefined Replies"
+msgstr "定型返信"
+
+#: .\templates\dashboard\base.html:49
+msgid "Knowledge Base"
+msgstr "ナレッジベース"
+
+#: .\templates\dashboard\base.html:59
+msgid "Settings"
+msgstr "設定"
+
+#: .\templates\dashboard\base.html:93
+msgid "Plan"
+msgstr "プラン"
+
+#: .\templates\dashboard\base.html:95
+msgid "Logout"
+msgstr "ログアウト"
+
+#: .\templates\dashboard\home.html:11
+msgid "Monthly Usage"
+msgstr "月間使用量"
+
+#: .\templates\dashboard\home.html:12
+msgid "of"
+msgstr "/"
+
+#: .\templates\dashboard\home.html:12
+msgid "replies used"
+msgstr "件の返信を使用"
+
+#: .\templates\dashboard\home.html:52
+msgid "Active"
+msgstr "アクティブ"
+
+#: .\templates\dashboard\home.html:68
+msgid "Needs Review"
+msgstr "要確認"
+
+#: .\templates\dashboard\home.html:84
+msgid "AI Replies"
+msgstr "AI返信"
+
+#: .\templates\dashboard\home.html:96
+msgid "Recent Conversations"
+msgstr "最近の会話"
+
+#: .\templates\dashboard\home.html:104 .\templates\dashboard\home.html:152
+msgid "Unknown Customer"
+msgstr "不明な顧客"
+
+#: .\templates\dashboard\home.html:106
+msgid "via"
+msgstr "経由："
+
+#: .\templates\dashboard\home.html:116 .\templates\dashboard\home.html:157
+msgid "ago"
+msgstr "前"
+
+#: .\templates\dashboard\home.html:126
+msgid "No conversations yet"
+msgstr "会話はまだありません"
+
+#: .\templates\dashboard\home.html:127
+msgid "Connect a platform to start receiving messages"
+msgstr "プラットフォームを接続してメッセージの受信を開始"
+
+#: .\templates\dashboard\home.html:136
+msgid "Needs Your Attention"
+msgstr "対応が必要"
+
+#: .\templates\dashboard\home.html:154
+msgid "AI couldn't handle this conversation"
+msgstr "AIがこの会話を処理できませんでした"
+
+#: .\templates\dashboard\home.html:167
+msgid "All caught up!"
+msgstr "すべて対応済み！"
+
+#: .\templates\dashboard\home.html:168
+msgid "No conversations need your attention"
+msgstr "対応が必要な会話はありません"
+
+#: .\templates\dashboard\home.html:177
+msgid "Quick Actions"
+msgstr "クイックアクション"
+
+#: .\templates\dashboard\home.html:187
+msgid "Add Predefined Reply"
+msgstr "定型返信を追加"
+
+#: .\templates\dashboard\home.html:188
+msgid "active"
+msgstr "件がアクティブ"
+
+#: .\templates\dashboard\home.html:201
+msgid "Upload Document"
+msgstr "ドキュメントをアップロード"
+
+#: .\templates\dashboard\home.html:202
+msgid "in knowledge base"
+msgstr "件がナレッジベースに登録済み"
+
+#: .\templates\dashboard\home.html:215
+msgid "Connect Platform"
+msgstr "プラットフォームを接続"
+
+#: .\templates\dashboard\home.html:216
+msgid "Email, WhatsApp, Instagram"
+msgstr "メール、WhatsApp、Instagram"

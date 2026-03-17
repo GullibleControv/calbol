@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',  # i18n - must be after SessionMiddleware
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -152,10 +153,28 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 # Internationalization
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+from django.utils.translation import gettext_lazy as _
+
+LANGUAGE_CODE = 'en'
+TIME_ZONE = 'Asia/Tokyo'  # Japan timezone
 USE_I18N = True
+USE_L10N = True
 USE_TZ = True
+
+# Supported languages
+LANGUAGES = [
+    ('en', _('English')),
+    ('ja', _('Japanese')),
+]
+
+# Path to locale files
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
+
+# Language cookie settings
+LANGUAGE_COOKIE_NAME = 'calbol_language'
+LANGUAGE_COOKIE_AGE = 365 * 24 * 60 * 60  # 1 year
 
 
 # Static files (CSS, JavaScript, Images)

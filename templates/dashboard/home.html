@@ -1,14 +1,15 @@
 {% extends 'dashboard/base.html' %}
+{% load i18n %}
 
-{% block page_title %}Dashboard{% endblock %}
+{% block page_title %}{% trans "Dashboard" %}{% endblock %}
 
 {% block content %}
 <!-- Usage Banner -->
 <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
     <div class="flex items-center justify-between">
         <div>
-            <h3 class="text-lg font-medium text-gray-900">Monthly Usage</h3>
-            <p class="text-sm text-gray-500">{{ stats.monthly_usage }} of {{ stats.monthly_limit }} replies used</p>
+            <h3 class="text-lg font-medium text-gray-900">{% trans "Monthly Usage" %}</h3>
+            <p class="text-sm text-gray-500">{{ stats.monthly_usage }} {% trans "of" %} {{ stats.monthly_limit }} {% trans "replies used" %}</p>
         </div>
         <div class="text-right">
             <span class="text-2xl font-bold text-primary-600">{{ stats.usage_percent }}%</span>
@@ -32,7 +33,7 @@
                 </svg>
             </div>
             <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500">Conversations</p>
+                <p class="text-sm font-medium text-gray-500">{% trans "Conversations" %}</p>
                 <p class="text-2xl font-semibold text-gray-900">{{ stats.total_conversations }}</p>
             </div>
         </div>
@@ -48,7 +49,7 @@
                 </svg>
             </div>
             <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500">Active</p>
+                <p class="text-sm font-medium text-gray-500">{% trans "Active" %}</p>
                 <p class="text-2xl font-semibold text-gray-900">{{ stats.active_conversations }}</p>
             </div>
         </div>
@@ -64,7 +65,7 @@
                 </svg>
             </div>
             <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500">Needs Review</p>
+                <p class="text-sm font-medium text-gray-500">{% trans "Needs Review" %}</p>
                 <p class="text-2xl font-semibold text-gray-900">{{ stats.needs_review }}</p>
             </div>
         </div>
@@ -80,7 +81,7 @@
                 </svg>
             </div>
             <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500">AI Replies</p>
+                <p class="text-sm font-medium text-gray-500">{% trans "AI Replies" %}</p>
                 <p class="text-2xl font-semibold text-gray-900">{{ stats.ai_replies }}</p>
             </div>
         </div>
@@ -92,7 +93,7 @@
     <!-- Recent Conversations -->
     <div class="bg-white rounded-xl shadow-sm">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">Recent Conversations</h3>
+            <h3 class="text-lg font-medium text-gray-900">{% trans "Recent Conversations" %}</h3>
         </div>
         <div class="divide-y divide-gray-200">
             {% for conv in recent_conversations %}
@@ -100,9 +101,9 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-900">
-                            {{ conv.customer_name|default:"Unknown Customer" }}
+                            {{ conv.customer_name|default:_("Unknown Customer") }}
                         </p>
-                        <p class="text-sm text-gray-500">via {{ conv.platform|title }}</p>
+                        <p class="text-sm text-gray-500">{% trans "via" %} {{ conv.platform|title }}</p>
                     </div>
                     <div class="text-right">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
@@ -112,7 +113,7 @@
                             {% else %}bg-gray-100 text-gray-800{% endif %}">
                             {{ conv.status|title }}
                         </span>
-                        <p class="text-xs text-gray-400 mt-1">{{ conv.updated_at|timesince }} ago</p>
+                        <p class="text-xs text-gray-400 mt-1">{{ conv.updated_at|timesince }} {% trans "ago" %}</p>
                     </div>
                 </div>
             </a>
@@ -122,8 +123,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                 </svg>
-                <p class="mt-2">No conversations yet</p>
-                <p class="text-sm">Connect a platform to start receiving messages</p>
+                <p class="mt-2">{% trans "No conversations yet" %}</p>
+                <p class="text-sm">{% trans "Connect a platform to start receiving messages" %}</p>
             </div>
             {% endfor %}
         </div>
@@ -132,7 +133,7 @@
     <!-- Needs Attention -->
     <div class="bg-white rounded-xl shadow-sm">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">Needs Your Attention</h3>
+            <h3 class="text-lg font-medium text-gray-900">{% trans "Needs Your Attention" %}</h3>
         </div>
         <div class="divide-y divide-gray-200">
             {% for conv in flagged_conversations %}
@@ -148,12 +149,12 @@
                     </div>
                     <div class="ml-4 flex-1">
                         <p class="text-sm font-medium text-gray-900">
-                            {{ conv.customer_name|default:"Unknown Customer" }}
+                            {{ conv.customer_name|default:_("Unknown Customer") }}
                         </p>
-                        <p class="text-sm text-gray-500">AI couldn't handle this conversation</p>
+                        <p class="text-sm text-gray-500">{% trans "AI couldn't handle this conversation" %}</p>
                     </div>
                     <div>
-                        <span class="text-xs text-gray-400">{{ conv.updated_at|timesince }} ago</span>
+                        <span class="text-xs text-gray-400">{{ conv.updated_at|timesince }} {% trans "ago" %}</span>
                     </div>
                 </div>
             </a>
@@ -163,8 +164,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <p class="mt-2 text-green-600 font-medium">All caught up!</p>
-                <p class="text-sm">No conversations need your attention</p>
+                <p class="mt-2 text-green-600 font-medium">{% trans "All caught up!" %}</p>
+                <p class="text-sm">{% trans "No conversations need your attention" %}</p>
             </div>
             {% endfor %}
         </div>
@@ -173,7 +174,7 @@
 
 <!-- Quick Actions -->
 <div class="mt-8 bg-white rounded-xl shadow-sm p-6">
-    <h3 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
+    <h3 class="text-lg font-medium text-gray-900 mb-4">{% trans "Quick Actions" %}</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="{% url 'replies:list' %}"
            class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors">
@@ -183,8 +184,8 @@
                 </svg>
             </div>
             <div class="ml-3">
-                <p class="text-sm font-medium text-gray-900">Add Predefined Reply</p>
-                <p class="text-xs text-gray-500">{{ stats.predefined_replies }} active</p>
+                <p class="text-sm font-medium text-gray-900">{% trans "Add Predefined Reply" %}</p>
+                <p class="text-xs text-gray-500">{{ stats.predefined_replies }} {% trans "active" %}</p>
             </div>
         </a>
 
@@ -197,8 +198,8 @@
                 </svg>
             </div>
             <div class="ml-3">
-                <p class="text-sm font-medium text-gray-900">Upload Document</p>
-                <p class="text-xs text-gray-500">{{ stats.documents }} in knowledge base</p>
+                <p class="text-sm font-medium text-gray-900">{% trans "Upload Document" %}</p>
+                <p class="text-xs text-gray-500">{{ stats.documents }} {% trans "in knowledge base" %}</p>
             </div>
         </a>
 
@@ -211,8 +212,8 @@
                 </svg>
             </div>
             <div class="ml-3">
-                <p class="text-sm font-medium text-gray-900">Connect Platform</p>
-                <p class="text-xs text-gray-500">Email, WhatsApp, Instagram</p>
+                <p class="text-sm font-medium text-gray-900">{% trans "Connect Platform" %}</p>
+                <p class="text-xs text-gray-500">{% trans "Email, WhatsApp, Instagram" %}</p>
             </div>
         </a>
     </div>
