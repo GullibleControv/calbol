@@ -1,0 +1,75 @@
+<!-- Modal Backdrop -->
+<div id="modal-backdrop" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <!-- Modal Content -->
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-xl bg-white">
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-medium text-gray-900">
+                {% if action == 'edit' %}Edit Reply{% else %}Add Predefined Reply{% endif %}
+            </h3>
+            <button onclick="document.getElementById('modal-container').innerHTML = ''"
+                    class="text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form hx-post="{% if action == 'edit' %}{% url 'replies:edit' reply.pk %}{% else %}{% url 'replies:create' %}{% endif %}"
+              hx-target="#replies-list"
+              hx-swap="innerHTML"
+              class="space-y-4">
+            {% csrf_token %}
+
+            <!-- Name Field -->
+            <div>
+                <label for="id_name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Keywords Field -->
+            <div>
+                <label for="id_keywords_text" class="block text-sm font-medium text-gray-700 mb-1">
+                    Keywords <span class="text-gray-400 font-normal">(comma separated)</span>
+                </label>
+                {{ form.keywords_text }}
+                {% if form.keywords_text.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.keywords_text.errors.0 }}</p>
+                {% endif %}
+                <p class="mt-1 text-xs text-gray-500">e.g., price, cost, how much, pricing</p>
+            </div>
+
+            <!-- Response Field -->
+            <div>
+                <label for="id_response" class="block text-sm font-medium text-gray-700 mb-1">Response</label>
+                {{ form.response }}
+                {% if form.response.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.response.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Active Toggle -->
+            <div class="flex items-center">
+                {{ form.is_active }}
+                <label for="id_is_active" class="ml-2 text-sm text-gray-700">Active</label>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                <button type="button"
+                        onclick="document.getElementById('modal-container').innerHTML = ''"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700">
+                    {% if action == 'edit' %}Save Changes{% else %}Create Reply{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

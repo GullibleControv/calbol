@@ -1,0 +1,102 @@
+<!-- Modal Backdrop -->
+<div id="modal-backdrop" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <!-- Modal Content -->
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-xl bg-white">
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-medium text-gray-900">Upload Document</h3>
+            <button onclick="document.getElementById('modal-container').innerHTML = ''"
+                    class="text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Upload Form -->
+        <form hx-post="{% url 'knowledge:list' %}"
+              hx-target="#documents-grid"
+              hx-swap="innerHTML"
+              hx-encoding="multipart/form-data"
+              class="space-y-4">
+            {% csrf_token %}
+
+            <!-- Drag & Drop Area -->
+            <div id="drop-zone"
+                 class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-500 transition-colors cursor-pointer"
+                 onclick="document.getElementById('file-upload').click()">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+                <p class="mt-2 text-sm text-gray-600">
+                    <span class="font-medium text-primary-600">Click to upload</span> or drag and drop
+                </p>
+                <p class="mt-1 text-xs text-gray-500">PDF, TXT, DOCX up to 10MB</p>
+                <p id="file-name" class="mt-2 text-sm font-medium text-primary-600 hidden"></p>
+                {{ form.file }}
+            </div>
+
+            {% if form.file.errors %}
+            <p class="text-sm text-red-600">{{ form.file.errors.0 }}</p>
+            {% endif %}
+
+            <!-- Description Field -->
+            <div>
+                <label for="id_description" class="block text-sm font-medium text-gray-700 mb-1">
+                    Description <span class="text-gray-400 font-normal">(optional)</span>
+                </label>
+                {{ form.description }}
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                <button type="button"
+                        onclick="document.getElementById('modal-container').innerHTML = ''"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700">
+                    Upload
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Show file name when selected
+    document.getElementById('file-upload').addEventListener('change', function(e) {
+        const fileName = e.target.files[0]?.name;
+        if (fileName) {
+            document.getElementById('file-name').textContent = fileName;
+            document.getElementById('file-name').classList.remove('hidden');
+        }
+    });
+
+    // Drag and drop styling
+    const dropZone = document.getElementById('drop-zone');
+
+    dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('border-primary-500', 'bg-primary-50');
+    });
+
+    dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('border-primary-500', 'bg-primary-50');
+    });
+
+    dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('border-primary-500', 'bg-primary-50');
+        const fileInput = document.getElementById('file-upload');
+        fileInput.files = e.dataTransfer.files;
+        const fileName = e.dataTransfer.files[0]?.name;
+        if (fileName) {
+            document.getElementById('file-name').textContent = fileName;
+            document.getElementById('file-name').classList.remove('hidden');
+        }
+    });
+</script>

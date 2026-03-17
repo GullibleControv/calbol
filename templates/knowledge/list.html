@@ -1,0 +1,62 @@
+{% extends 'dashboard/base.html' %}
+
+{% block page_title %}Knowledge Base{% endblock %}
+
+{% block header_actions %}
+<button hx-get="{% url 'knowledge:upload_form' %}"
+        hx-target="#modal-container"
+        hx-swap="innerHTML"
+        class="inline-flex items-center px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors">
+    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+    </svg>
+    Upload Document
+</button>
+{% endblock %}
+
+{% block content %}
+<!-- Info Banner -->
+<div class="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
+    <div class="flex">
+        <svg class="h-5 w-5 text-purple-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+        </svg>
+        <div class="ml-3">
+            <h3 class="text-sm font-medium text-purple-800">AI-Powered Knowledge Base</h3>
+            <p class="mt-1 text-sm text-purple-700">
+                Upload documents about your business (FAQs, product info, policies).
+                The AI will use this knowledge to answer customer questions accurately.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Documents Grid -->
+<div id="documents-grid">
+    {% include 'knowledge/partials/document_grid.html' %}
+</div>
+
+<!-- Modal Container -->
+<div id="modal-container"></div>
+
+<!-- HTMX Event Listeners -->
+<script>
+    document.body.addEventListener('closeModal', function() {
+        document.getElementById('modal-container').innerHTML = '';
+    });
+
+    document.body.addEventListener('click', function(e) {
+        if (e.target.id === 'modal-backdrop') {
+            document.getElementById('modal-container').innerHTML = '';
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.getElementById('modal-container').innerHTML = '';
+        }
+    });
+</script>
+{% endblock %}
