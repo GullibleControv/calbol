@@ -246,3 +246,173 @@ class AITestViewSet(viewsets.ViewSet):
                 for chunk, similarity in results
             ]
         })
+
+
+class EmailIntegrationViewSet(viewsets.ViewSet):
+    """
+    API endpoints for email integration setup and testing.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['post'])
+    def setup(self, request):
+        """
+        Set up email platform for the user.
+
+        POST /api/v1/email/setup/
+        Body: {
+            "from_email": "support@yourdomain.com",
+            "from_name": "Support Team"
+        }
+        """
+        from conversations.integrations.email.processor import setup_email_platform
+
+        from_email = request.data.get('from_email')
+        from_name = request.data.get('from_name', 'Support')
+
+        if not from_email:
+            return Response(
+                {'error': 'from_email is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        platform = setup_email_platform(
+            user=request.user,
+            from_email=from_email,
+            from_name=from_name,
+        )
+
+        return Response({
+            'success': True,
+            'platform_id': platform.id,
+            'webhook_url': f'/api/v1/webhooks/email/{platform.id}/',
+            'instructions': {
+                'sendgrid': 'Set Inbound Parse URL to: https://yourdomain.com/api/v1/webhooks/email/sendgrid/{}/'.format(platform.id),
+                'mailgun': 'Create a Route with action forward() to: https://yourdomain.com/api/v1/webhooks/email/mailgun/{}/'.format(platform.id),
+            }
+        })
+
+    @action(detail=False, methods=['get'])
+    def status(self, request):
+        """
+        Get email platform status.
+
+        GET /api/v1/email/status/
+        """
+        try:
+            platform = Platform.objects.get(
+                user=request.user,
+                platform_type='email'
+            )
+            return Response({
+                'configured': True,
+                'is_active': platform.is_active,
+                'platform_id': platform.id,
+                'from_email': platform.credentials.get('from_email'),
+                'from_name': platform.credentials.get('from_name'),
+                'webhook_url': f'/api/v1/webhooks/email/{platform.id}/',
+            })
+        except Platform.DoesNotExist:
+            return Response({
+                'configured': False,
+                'message': 'Email platform not configured. Use /api/v1/email/setup/ to configure.',
+            })
+
+    @action(detail=False, methods=['post'])
+    def test_send(self, request):
+        """
+        Send a test email.
+
+        POST /api/v1/email/test_send/
+        Body: {
+            "to": "test@example.com",
+            "subject": "Test Email",
+            "body": "This is a test email from CalBol."
+        }
+        """
+        from conversations.integrations.email.sender import EmailSender
+
+        to = request.data.get('to')
+        subject = request.data.get('subject', 'Test Email from CalBol')
+        body = request.data.get('body', 'This is a test email.')
+
+        if not to:
+            return Response(
+                {'error': 'to email is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Get platform for from_email
+        try:
+            platform = Platform.objects.get(
+                user=request.user,
+                platform_type='email'
+            )
+            from_email = platform.credentials.get('from_email')
+            from_name = platform.credentials.get('from_name', 'Support')
+        except Platform.DoesNotExist:
+            return Response(
+                {'error': 'Email platform not configured'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not from_email:
+            return Response(
+                {'error': 'from_email not configured'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        sender = EmailSender()
+        result = sender.send(
+            to=to,
+            subject=subject,
+            body=body,
+            from_email=from_email,
+            from_name=from_name,
+        )
+
+        return Response(result)
+
+    @action(detail=False, methods=['post'])
+    def simulate_inbound(self, request):
+        """
+        Simulate receiving an inbound email (for testing).
+
+        POST /api/v1/email/simulate_inbound/
+        Body: {
+            "from_email": "customer@example.com",
+            "from_name": "John Doe",
+            "subject": "Question about pricing",
+            "body": "What are your prices?"
+        }
+        """
+        from conversations.integrations.email.processor import EmailProcessor
+        from conversations.integrations.email.receiver import InboundEmail
+
+        # Get platform
+        try:
+            platform = Platform.objects.get(
+                user=request.user,
+                platform_type='email',
+                is_active=True
+            )
+        except Platform.DoesNotExist:
+            return Response(
+                {'error': 'Email platform not configured or inactive'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Create simulated email
+        email = InboundEmail(
+            from_email=request.data.get('from_email', 'test@example.com'),
+            from_name=request.data.get('from_name', 'Test Customer'),
+            to_email=platform.credentials.get('from_email', ''),
+            subject=request.data.get('subject', 'Test Inquiry'),
+            body_plain=request.data.get('body', 'This is a test message.'),
+        )
+
+        # Process the email
+        processor = EmailProcessor(platform)
+        result = processor.process_inbound(email)
+
+        return Response(result)

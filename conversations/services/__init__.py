@@ -1,3 +1,3 @@
-from .message_handler import MessageHandler
+from .message_handler import MessageHandler, handle_incoming_message
 
-__all__ = ['MessageHandler']
+__all__ = ['MessageHandler', 'handle_incoming_message']

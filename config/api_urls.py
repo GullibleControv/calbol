@@ -17,7 +17,8 @@ from conversations.api import (
     PlatformViewSet,
     ConversationViewSet,
     MessageViewSet,
-    AITestViewSet
+    AITestViewSet,
+    EmailIntegrationViewSet
 )
 
 # Create router and register viewsets
@@ -28,11 +29,15 @@ router.register(r'platforms', PlatformViewSet, basename='platform')
 router.register(r'conversations', ConversationViewSet, basename='conversation')
 router.register(r'messages', MessageViewSet, basename='message')
 router.register(r'ai', AITestViewSet, basename='ai')
+router.register(r'email', EmailIntegrationViewSet, basename='email')
 
 urlpatterns = [
     # JWT Authentication
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # Webhooks (no authentication required - verified by signature)
+    path('webhooks/email/', include('conversations.integrations.email.urls')),
 
     # API endpoints (registered via router)
     path('', include(router.urls)),
