@@ -1,0 +1,16 @@
+[Unit]
+Description=CalBol Celery Worker
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/calbol
+Environment="PATH=/var/www/calbol/venv/bin"
+EnvironmentFile=/var/www/calbol/.env
+ExecStart=/var/www/calbol/venv/bin/celery -A config worker --loglevel=info
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

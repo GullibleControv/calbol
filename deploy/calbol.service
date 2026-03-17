@@ -1,0 +1,17 @@
+[Unit]
+Description=CalBol Gunicorn Daemon
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/calbol
+Environment="PATH=/var/www/calbol/venv/bin"
+EnvironmentFile=/var/www/calbol/.env
+ExecStart=/var/www/calbol/venv/bin/gunicorn --config /var/www/calbol/deploy/gunicorn.conf.py config.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
