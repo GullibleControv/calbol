@@ -16,7 +16,8 @@ from knowledge.api import DocumentViewSet
 from conversations.api import (
     PlatformViewSet,
     ConversationViewSet,
-    MessageViewSet
+    MessageViewSet,
+    AITestViewSet
 )
 
 # Create router and register viewsets
@@ -26,6 +27,7 @@ router.register(r'documents', DocumentViewSet, basename='document')
 router.register(r'platforms', PlatformViewSet, basename='platform')
 router.register(r'conversations', ConversationViewSet, basename='conversation')
 router.register(r'messages', MessageViewSet, basename='message')
+router.register(r'ai', AITestViewSet, basename='ai')
 
 urlpatterns = [
     # JWT Authentication

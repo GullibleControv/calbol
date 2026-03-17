@@ -145,3 +145,104 @@ class MessageViewSet(viewsets.ReadOnlyModelViewSet):
         messages = self.get_queryset()[:limit]
         serializer = self.get_serializer(messages, many=True)
         return Response(serializer.data)
+
+
+class AITestViewSet(viewsets.ViewSet):
+    """
+    API endpoints for testing AI functionality.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['post'])
+    def test_response(self, request):
+        """
+        Test AI response generation without creating a conversation.
+
+        POST /api/v1/ai/test_response/
+        Body: {"message": "What are your prices?"}
+        """
+        from knowledge.services import RAGService
+
+        message = request.data.get('message', '')
+        if not message:
+            return Response(
+                {'error': 'Message is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        rag = RAGService()
+        result = rag.generate_response(
+            user=request.user,
+            message=message
+        )
+
+        return Response(result)
+
+    @action(detail=False, methods=['post'])
+    def simulate_message(self, request):
+        """
+        Simulate receiving a customer message.
+
+        POST /api/v1/ai/simulate_message/
+        Body: {
+            "message": "What are your prices?",
+            "customer_id": "test-customer-123",
+            "platform": "whatsapp"
+        }
+        """
+        from conversations.services import handle_incoming_message
+
+        message = request.data.get('message', '')
+        customer_id = request.data.get('customer_id', 'test-customer')
+        platform = request.data.get('platform', 'test')
+
+        if not message:
+            return Response(
+                {'error': 'Message is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        result = handle_incoming_message(
+            user_id=request.user.id,
+            platform=platform,
+            customer_id=customer_id,
+            content=message,
+            customer_name=request.data.get('customer_name', 'Test Customer')
+        )
+
+        return Response(result)
+
+    @action(detail=False, methods=['get'])
+    def search_knowledge(self, request):
+        """
+        Search the knowledge base for relevant content.
+
+        GET /api/v1/ai/search_knowledge/?query=pricing
+        """
+        from knowledge.services import EmbeddingService
+
+        query = request.query_params.get('query', '')
+        if not query:
+            return Response(
+                {'error': 'Query parameter is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        embedding_service = EmbeddingService()
+        results = embedding_service.search_user_knowledge(
+            user=request.user,
+            query=query,
+            top_k=5
+        )
+
+        return Response({
+            'query': query,
+            'results': [
+                {
+                    'content': chunk['content'][:500],
+                    'document': chunk['document_filename'],
+                    'similarity': round(similarity, 3)
+                }
+                for chunk, similarity in results
+            ]
+        })
