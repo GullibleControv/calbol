@@ -1,16 +1,36 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Register - CalBol{% endblock %}
+{% block title %}{% trans "Register" %} - CalBol{% endblock %}
 
 {% block body %}
 <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
+        <!-- Language Switcher (top right) -->
+        <div class="flex justify-end">
+            <form action="{% url 'set_language' %}" method="post" class="flex items-center space-x-2">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <select name="language"
+                        onchange="this.form.submit()"
+                        class="bg-white text-gray-700 text-sm rounded border-gray-300 focus:ring-primary-500 focus:border-primary-500 py-1 px-2">
+                    {% get_current_language as LANGUAGE_CODE %}
+                    {% get_available_languages as LANGUAGES %}
+                    {% for lang_code, lang_name in LANGUAGES %}
+                        <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>
+                            {{ lang_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
         <!-- Logo and Header -->
         <div class="text-center">
             <h1 class="text-4xl font-bold text-primary-600">CalBol</h1>
-            <p class="mt-2 text-gray-600">Auto-reply assistant for busy professionals</p>
-            <h2 class="mt-6 text-2xl font-semibold text-gray-900">Create your account</h2>
-            <p class="mt-2 text-gray-500">Start your free trial - no credit card required</p>
+            <p class="mt-2 text-gray-600">{% trans "Auto-reply assistant for busy professionals" %}</p>
+            <h2 class="mt-6 text-2xl font-semibold text-gray-900">{% trans "Create your account" %}</h2>
+            <p class="mt-2 text-gray-500">{% trans "Start your free trial - no credit card required" %}</p>
         </div>
 
         <!-- Register Form -->
@@ -29,7 +49,7 @@
             <!-- Email Field -->
             <div>
                 <label for="id_email" class="block text-sm font-medium text-gray-700 mb-1">
-                    Email address
+                    {% trans "Email address" %}
                 </label>
                 {{ form.email }}
                 {% if form.email.errors %}
@@ -40,7 +60,7 @@
             <!-- Company Name Field -->
             <div>
                 <label for="id_company_name" class="block text-sm font-medium text-gray-700 mb-1">
-                    Company Name <span class="text-gray-400">(optional)</span>
+                    {% trans "Company Name" %} <span class="text-gray-400">({% trans "optional" %})</span>
                 </label>
                 {{ form.company_name }}
                 {% if form.company_name.errors %}
@@ -51,7 +71,7 @@
             <!-- Password Field -->
             <div>
                 <label for="id_password1" class="block text-sm font-medium text-gray-700 mb-1">
-                    Password
+                    {% trans "Password" %}
                 </label>
                 {{ form.password1 }}
                 {% if form.password1.errors %}
@@ -62,7 +82,7 @@
             <!-- Confirm Password Field -->
             <div>
                 <label for="id_password2" class="block text-sm font-medium text-gray-700 mb-1">
-                    Confirm Password
+                    {% trans "Confirm Password" %}
                 </label>
                 {{ form.password2 }}
                 {% if form.password2.errors %}
@@ -75,49 +95,49 @@
                 <input id="terms" name="terms" type="checkbox" required
                        class="h-4 w-4 mt-0.5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
                 <label for="terms" class="ml-2 block text-sm text-gray-600">
-                    I agree to the
-                    <a href="#" class="text-primary-600 hover:text-primary-500">Terms of Service</a>
-                    and
-                    <a href="#" class="text-primary-600 hover:text-primary-500">Privacy Policy</a>
+                    {% trans "I agree to the" %}
+                    <a href="#" class="text-primary-600 hover:text-primary-500">{% trans "Terms of Service" %}</a>
+                    {% trans "and" %}
+                    <a href="#" class="text-primary-600 hover:text-primary-500">{% trans "Privacy Policy" %}</a>
                 </label>
             </div>
 
             <!-- Submit Button -->
             <button type="submit"
                     class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
-                Create account
+                {% trans "Create account" %}
             </button>
         </form>
 
         <!-- Login Link -->
         <p class="text-center text-gray-600">
-            Already have an account?
+            {% trans "Already have an account?" %}
             <a href="{% url 'login' %}" class="text-primary-600 hover:text-primary-500 font-medium">
-                Sign in
+                {% trans "Sign in" %}
             </a>
         </p>
 
         <!-- Features Preview -->
         <div class="bg-white p-6 rounded-xl shadow-lg">
-            <h3 class="text-sm font-semibold text-gray-900 mb-4">What you get with CalBol:</h3>
+            <h3 class="text-sm font-semibold text-gray-900 mb-4">{% trans "What you get with CalBol:" %}</h3>
             <ul class="space-y-3">
                 <li class="flex items-center text-sm text-gray-600">
                     <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
-                    50 free auto-replies per month
+                    {% trans "50 free auto-replies per month" %}
                 </li>
                 <li class="flex items-center text-sm text-gray-600">
                     <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
-                    AI-powered responses from your knowledge base
+                    {% trans "AI-powered responses from your knowledge base" %}
                 </li>
                 <li class="flex items-center text-sm text-gray-600">
                     <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
-                    Connect Email, WhatsApp, and Instagram
+                    {% trans "Connect Email and WhatsApp" %}
                 </li>
             </ul>
         </div>

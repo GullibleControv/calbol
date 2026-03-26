@@ -2,87 +2,100 @@
 {% load i18n %}
 
 {% block page_title %}{% trans "Dashboard" %}{% endblock %}
+{% block page_subtitle %}{% trans "Welcome back! Here's what's happening with your auto-replies." %}{% endblock %}
 
 {% block content %}
 <!-- Usage Banner -->
-<div class="bg-white rounded-xl shadow-sm p-6 mb-8">
-    <div class="flex items-center justify-between">
+<div class="bg-white rounded-2xl shadow-soft p-6 mb-8 card-hover animate-on-load">
+    <div class="flex items-center justify-between mb-4">
         <div>
-            <h3 class="text-lg font-medium text-gray-900">{% trans "Monthly Usage" %}</h3>
-            <p class="text-sm text-gray-500">{{ stats.monthly_usage }} {% trans "of" %} {{ stats.monthly_limit }} {% trans "replies used" %}</p>
+            <h3 class="text-lg font-semibold text-gray-900">{% trans "Monthly Usage" %}</h3>
+            <p class="text-sm text-gray-500 mt-0.5">{{ stats.monthly_usage }} {% trans "of" %} {{ stats.monthly_limit }} {% trans "replies used" %}</p>
         </div>
         <div class="text-right">
-            <span class="text-2xl font-bold text-primary-600">{{ stats.usage_percent }}%</span>
+            <span class="text-3xl font-bold gradient-text">{{ stats.usage_percent }}%</span>
         </div>
     </div>
-    <div class="mt-4 w-full bg-gray-200 rounded-full h-2">
-        <div class="bg-primary-600 h-2 rounded-full transition-all duration-500"
-             style="width: {{ stats.usage_percent }}%"></div>
+    <div class="relative w-full bg-surface-100 rounded-full h-3 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full transition-all duration-1000 ease-out"
+             style="width: {{ stats.usage_percent }}%; transform: translateX(0);"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-full shimmer-bar"></div>
     </div>
 </div>
 
 <!-- Stats Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <!-- Total Conversations -->
-    <div class="bg-white rounded-xl shadow-sm p-6">
-        <div class="flex items-center">
-            <div class="p-3 bg-blue-100 rounded-lg">
+    <div class="group bg-white rounded-2xl shadow-soft p-6 card-hover animate-on-load relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-transparent rounded-bl-full"></div>
+        <div class="relative flex items-start justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">{% trans "Conversations" %}</p>
+                <p class="text-3xl font-bold text-gray-900">{{ stats.total_conversations }}</p>
+                <p class="text-xs text-gray-400 mt-2">{% trans "Total active" %}</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                 </svg>
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500">{% trans "Conversations" %}</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ stats.total_conversations }}</p>
-            </div>
         </div>
     </div>
 
     <!-- Active Conversations -->
-    <div class="bg-white rounded-xl shadow-sm p-6">
-        <div class="flex items-center">
-            <div class="p-3 bg-green-100 rounded-lg">
+    <div class="group bg-white rounded-2xl shadow-soft p-6 card-hover animate-on-load relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-green-500/10 to-transparent rounded-bl-full"></div>
+        <div class="relative flex items-start justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">{% trans "Active" %}</p>
+                <p class="text-3xl font-bold text-gray-900">{{ stats.active_conversations }}</p>
+                <p class="text-xs text-green-600 mt-2 flex items-center">
+                    <span class="w-2 h-2 bg-green-500 rounded-full mr-1.5 animate-pulse"></span>
+                    {% trans "Live now" %}
+                </p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500">{% trans "Active" %}</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ stats.active_conversations }}</p>
-            </div>
         </div>
     </div>
 
     <!-- Needs Review -->
-    <div class="bg-white rounded-xl shadow-sm p-6">
-        <div class="flex items-center">
-            <div class="p-3 bg-yellow-100 rounded-lg">
-                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="group bg-white rounded-2xl shadow-soft p-6 card-hover animate-on-load relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-amber-500/10 to-transparent rounded-bl-full"></div>
+        <div class="relative flex items-start justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">{% trans "Needs Review" %}</p>
+                <p class="text-3xl font-bold text-gray-900">{{ stats.needs_review }}</p>
+                <p class="text-xs text-amber-600 mt-2">{% trans "Awaiting action" %}</p>
+            </div>
+            <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                 </svg>
-            </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500">{% trans "Needs Review" %}</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ stats.needs_review }}</p>
             </div>
         </div>
     </div>
 
     <!-- AI Replies -->
-    <div class="bg-white rounded-xl shadow-sm p-6">
-        <div class="flex items-center">
-            <div class="p-3 bg-purple-100 rounded-lg">
+    <div class="group bg-white rounded-2xl shadow-soft p-6 card-hover animate-on-load relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-500/10 to-transparent rounded-bl-full"></div>
+        <div class="relative flex items-start justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">{% trans "AI Replies" %}</p>
+                <p class="text-3xl font-bold text-gray-900">{{ stats.ai_replies }}</p>
+                <p class="text-xs text-purple-600 mt-2">{% trans "Auto-generated" %}</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
-            </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500">{% trans "AI Replies" %}</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ stats.ai_replies }}</p>
             </div>
         </div>
     </div>
@@ -91,56 +104,85 @@
 <!-- Two Column Layout -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     <!-- Recent Conversations -->
-    <div class="bg-white rounded-xl shadow-sm">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">{% trans "Recent Conversations" %}</h3>
+    <div class="bg-white rounded-2xl shadow-soft overflow-hidden animate-on-load">
+        <div class="px-6 py-5 border-b border-surface-100 flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-900">{% trans "Recent Conversations" %}</h3>
+            <a href="{% url 'dashboard:conversations' %}" class="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors">
+                {% trans "View all" %}
+                <svg class="inline w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
         </div>
-        <div class="divide-y divide-gray-200">
+        <div class="divide-y divide-surface-100">
             {% for conv in recent_conversations %}
-            <a href="#" class="block px-6 py-4 hover:bg-gray-50 transition-colors">
+            <a href="#" class="block px-6 py-4 hover:bg-surface-50 transition-all duration-200 table-row-hover group">
                 <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-900">
-                            {{ conv.customer_name|default:_("Unknown Customer") }}
-                        </p>
-                        <p class="text-sm text-gray-500">{% trans "via" %} {{ conv.platform|title }}</p>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-100 to-accent-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                            <span class="text-sm font-semibold text-primary-700">{{ conv.customer_name|default:"U"|slice:":1"|upper }}</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900">
+                                {{ conv.customer_name|default:_("Unknown Customer") }}
+                            </p>
+                            <p class="text-xs text-gray-500 flex items-center mt-0.5">
+                                <span class="w-4 h-4 mr-1">
+                                    {% if conv.platform == 'email' %}
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    {% elif conv.platform == 'whatsapp' %}
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                                    {% else %}
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                    {% endif %}
+                                </span>
+                                {{ conv.platform|title }}
+                            </p>
+                        </div>
                     </div>
                     <div class="text-right">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                            {% if conv.status == 'active' %}bg-green-100 text-green-800
-                            {% elif conv.status == 'waiting' %}bg-yellow-100 text-yellow-800
-                            {% elif conv.status == 'escalated' %}bg-red-100 text-red-800
-                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium
+                            {% if conv.status == 'active' %}bg-green-50 text-green-700 ring-1 ring-green-600/20
+                            {% elif conv.status == 'waiting' %}bg-amber-50 text-amber-700 ring-1 ring-amber-600/20
+                            {% elif conv.status == 'escalated' %}bg-red-50 text-red-700 ring-1 ring-red-600/20
+                            {% else %}bg-gray-50 text-gray-700 ring-1 ring-gray-600/20{% endif %}">
                             {{ conv.status|title }}
                         </span>
-                        <p class="text-xs text-gray-400 mt-1">{{ conv.updated_at|timesince }} {% trans "ago" %}</p>
+                        <p class="text-xs text-gray-400 mt-1.5">{{ conv.updated_at|timesince }} {% trans "ago" %}</p>
                     </div>
                 </div>
             </a>
             {% empty %}
-            <div class="px-6 py-8 text-center text-gray-500">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                </svg>
-                <p class="mt-2">{% trans "No conversations yet" %}</p>
-                <p class="text-sm">{% trans "Connect a platform to start receiving messages" %}</p>
+            <div class="px-6 py-12 text-center">
+                <div class="w-16 h-16 bg-surface-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                </div>
+                <p class="text-gray-900 font-medium">{% trans "No conversations yet" %}</p>
+                <p class="text-sm text-gray-500 mt-1">{% trans "Connect a platform to start receiving messages" %}</p>
             </div>
             {% endfor %}
         </div>
     </div>
 
     <!-- Needs Attention -->
-    <div class="bg-white rounded-xl shadow-sm">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">{% trans "Needs Your Attention" %}</h3>
+    <div class="bg-white rounded-2xl shadow-soft overflow-hidden animate-on-load">
+        <div class="px-6 py-5 border-b border-surface-100 flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-900">{% trans "Needs Your Attention" %}</h3>
+            {% if flagged_conversations %}
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-700 text-xs font-bold">
+                {{ flagged_conversations|length }}
+            </span>
+            {% endif %}
         </div>
-        <div class="divide-y divide-gray-200">
+        <div class="divide-y divide-surface-100">
             {% for conv in flagged_conversations %}
-            <a href="#" class="block px-6 py-4 hover:bg-gray-50 transition-colors">
+            <a href="#" class="block px-6 py-4 hover:bg-red-50/50 transition-all duration-200 group">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-red-100">
+                        <span class="inline-flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-red-100 to-red-50 group-hover:from-red-200 group-hover:to-red-100 transition-all">
                             <svg class="h-5 w-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -148,24 +190,29 @@
                         </span>
                     </div>
                     <div class="ml-4 flex-1">
-                        <p class="text-sm font-medium text-gray-900">
+                        <p class="text-sm font-semibold text-gray-900">
                             {{ conv.customer_name|default:_("Unknown Customer") }}
                         </p>
-                        <p class="text-sm text-gray-500">{% trans "AI couldn't handle this conversation" %}</p>
+                        <p class="text-xs text-gray-500 mt-0.5">{% trans "AI couldn't handle this conversation" %}</p>
                     </div>
-                    <div>
+                    <div class="text-right">
                         <span class="text-xs text-gray-400">{{ conv.updated_at|timesince }} {% trans "ago" %}</span>
+                        <svg class="w-5 h-5 text-gray-300 group-hover:text-gray-400 group-hover:translate-x-1 transition-all ml-auto mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
                     </div>
                 </div>
             </a>
             {% empty %}
-            <div class="px-6 py-8 text-center text-gray-500">
-                <svg class="mx-auto h-12 w-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <p class="mt-2 text-green-600 font-medium">{% trans "All caught up!" %}</p>
-                <p class="text-sm">{% trans "No conversations need your attention" %}</p>
+            <div class="px-6 py-12 text-center">
+                <div class="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <p class="text-green-700 font-semibold">{% trans "All caught up!" %}</p>
+                <p class="text-sm text-gray-500 mt-1">{% trans "No conversations need your attention" %}</p>
             </div>
             {% endfor %}
         </div>
@@ -173,49 +220,68 @@
 </div>
 
 <!-- Quick Actions -->
-<div class="mt-8 bg-white rounded-xl shadow-sm p-6">
-    <h3 class="text-lg font-medium text-gray-900 mb-4">{% trans "Quick Actions" %}</h3>
+<div class="mt-8 animate-on-load">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">{% trans "Quick Actions" %}</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="{% url 'replies:list' %}"
-           class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors">
-            <div class="p-2 bg-primary-100 rounded-lg">
-                <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           class="group flex items-center p-5 bg-white rounded-2xl shadow-soft hover:shadow-soft-lg transition-all duration-300 card-hover border border-transparent hover:border-primary-200">
+            <div class="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
             </div>
-            <div class="ml-3">
-                <p class="text-sm font-medium text-gray-900">{% trans "Add Predefined Reply" %}</p>
-                <p class="text-xs text-gray-500">{{ stats.predefined_replies }} {% trans "active" %}</p>
+            <div class="ml-4">
+                <p class="text-sm font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">{% trans "Add Predefined Reply" %}</p>
+                <p class="text-xs text-gray-500 mt-0.5">{{ stats.predefined_replies }} {% trans "active" %}</p>
             </div>
+            <svg class="w-5 h-5 text-gray-300 ml-auto group-hover:text-primary-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
         </a>
 
         <a href="{% url 'knowledge:list' %}"
-           class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors">
-            <div class="p-2 bg-primary-100 rounded-lg">
-                <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           class="group flex items-center p-5 bg-white rounded-2xl shadow-soft hover:shadow-soft-lg transition-all duration-300 card-hover border border-transparent hover:border-accent-200">
+            <div class="w-12 h-12 bg-gradient-to-br from-accent-100 to-accent-50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-6 h-6 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                 </svg>
             </div>
-            <div class="ml-3">
-                <p class="text-sm font-medium text-gray-900">{% trans "Upload Document" %}</p>
-                <p class="text-xs text-gray-500">{{ stats.documents }} {% trans "in knowledge base" %}</p>
+            <div class="ml-4">
+                <p class="text-sm font-semibold text-gray-900 group-hover:text-accent-700 transition-colors">{% trans "Upload Document" %}</p>
+                <p class="text-xs text-gray-500 mt-0.5">{{ stats.documents }} {% trans "in knowledge base" %}</p>
             </div>
+            <svg class="w-5 h-5 text-gray-300 ml-auto group-hover:text-accent-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
         </a>
 
         <a href="{% url 'dashboard:settings' %}"
-           class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors">
-            <div class="p-2 bg-primary-100 rounded-lg">
-                <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           class="group flex items-center p-5 bg-white rounded-2xl shadow-soft hover:shadow-soft-lg transition-all duration-300 card-hover border border-transparent hover:border-green-200">
+            <div class="w-12 h-12 bg-gradient-to-br from-green-100 to-green-50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                 </svg>
             </div>
-            <div class="ml-3">
-                <p class="text-sm font-medium text-gray-900">{% trans "Connect Platform" %}</p>
-                <p class="text-xs text-gray-500">{% trans "Email, WhatsApp, Instagram" %}</p>
+            <div class="ml-4">
+                <p class="text-sm font-semibold text-gray-900 group-hover:text-green-700 transition-colors">{% trans "Connect Platform" %}</p>
+                <p class="text-xs text-gray-500 mt-0.5">{% trans "Email, WhatsApp" %}</p>
             </div>
+            <svg class="w-5 h-5 text-gray-300 ml-auto group-hover:text-green-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
         </a>
     </div>
 </div>
+
+<style>
+    .shimmer-bar {
+        animation: shimmerBar 2s ease-in-out infinite;
+    }
+    @keyframes shimmerBar {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+</style>
 {% endblock %}

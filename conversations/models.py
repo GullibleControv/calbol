@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from encrypted_fields.fields import EncryptedTextField
+import json
 
 
 class Platform(models.Model):
@@ -7,7 +9,7 @@ class Platform(models.Model):
     Platform Model
 
     Stores connected messaging platforms for each user.
-    Each platform (Email, WhatsApp, Instagram) has its own credentials.
+    Each platform (Email, WhatsApp) has its own credentials.
 
     Example:
         User connects their WhatsApp Business account
@@ -19,7 +21,6 @@ class Platform(models.Model):
     PLATFORM_CHOICES = [
         ('email', 'Email'),
         ('whatsapp', 'WhatsApp'),
-        ('instagram', 'Instagram'),
     ]
 
     user = models.ForeignKey(
@@ -40,13 +41,28 @@ class Platform(models.Model):
         help_text="Whether auto-replies are enabled for this platform"
     )
 
-    # Platform-specific credentials (stored as encrypted JSON)
-    # WARNING: In production, encrypt these credentials!
-    credentials = models.JSONField(
-        default=dict,
+    # Platform-specific credentials (encrypted at rest)
+    # Stores sensitive API tokens, access tokens, phone IDs, etc.
+    # Note: Stored as encrypted JSON string, use get_credentials()/set_credentials() methods
+    _credentials = EncryptedTextField(
         blank=True,
-        help_text="API tokens and credentials for this platform"
+        default='{}',
+        db_column='credentials',
+        help_text="Encrypted API tokens and credentials for this platform"
     )
+
+    @property
+    def credentials(self):
+        """Get credentials as a dictionary."""
+        try:
+            return json.loads(self._credentials) if self._credentials else {}
+        except (json.JSONDecodeError, TypeError):
+            return {}
+
+    @credentials.setter
+    def credentials(self, value):
+        """Set credentials from a dictionary."""
+        self._credentials = json.dumps(value) if value else '{}'
 
     # Platform-specific settings
     settings_data = models.JSONField(
@@ -150,6 +166,15 @@ class Conversation(models.Model):
         ordering = ['-updated_at']  # Most recent activity first
         # One conversation per customer per platform per user
         unique_together = ['user', 'platform', 'customer_id']
+        # Database indexes for query optimization
+        indexes = [
+            # Filter conversations by status per user (e.g., "show all active conversations")
+            models.Index(fields=['user', 'status'], name='conv_user_status_idx'),
+            # Find conversations needing human review per user
+            models.Index(fields=['user', 'needs_human_review'], name='conv_user_review_idx'),
+            # Sort conversations by most recent activity per user (matches ordering)
+            models.Index(fields=['user', '-updated_at'], name='conv_user_updated_idx'),
+        ]
 
     def __str__(self):
         name = self.customer_name or self.customer_id[:20]
@@ -264,6 +289,13 @@ class Message(models.Model):
         verbose_name = "Message"
         verbose_name_plural = "Messages"
         ordering = ['created_at']  # Chronological order
+        # Database indexes for query optimization
+        indexes = [
+            # Retrieve conversation history in chronological order
+            models.Index(fields=['conversation', 'created_at'], name='msg_conv_created_idx'),
+            # Analytics queries: count messages by response type
+            models.Index(fields=['response_type'], name='msg_response_type_idx'),
+        ]
 
     def __str__(self):
         direction_arrow = "←" if self.direction == "inbound" else "→"

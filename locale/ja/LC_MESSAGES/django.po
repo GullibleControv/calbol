@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CalBol 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-17 16:26+0900\n"
-"PO-Revision-Date: 2026-03-17 16:30+0900\n"
+"POT-Creation-Date: 2026-03-22 17:20+0900\n"
+"PO-Revision-Date: 2026-03-21 15:30+0900\n"
 "Last-Translator: CalBol Team\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: .\config\settings.py:166
+#: .\config\settings.py:236
 msgid "English"
-msgstr "English"
+msgstr "英語"
 
-#: .\config\settings.py:167
+#: .\config\settings.py:237
 msgid "Japanese"
 msgstr "日本語"
 
@@ -28,19 +28,19 @@ msgstr "日本語"
 msgid "Login"
 msgstr "ログイン"
 
-#: .\templates\auth\login.html:31
+#: .\templates\auth\login.html:31 .\templates\auth\register.html:31
 msgid "Auto-reply assistant for busy professionals"
 msgstr "忙しいプロフェッショナルのための自動返信アシスタント"
 
 #: .\templates\auth\login.html:32
 msgid "Sign in to your account"
-msgstr "アカウントにログイン"
+msgstr "アカウントにサインイン"
 
-#: .\templates\auth\login.html:51
+#: .\templates\auth\login.html:51 .\templates\auth\register.html:52
 msgid "Email address"
 msgstr "メールアドレス"
 
-#: .\templates\auth\login.html:62
+#: .\templates\auth\login.html:62 .\templates\auth\register.html:74
 msgid "Password"
 msgstr "パスワード"
 
@@ -52,9 +52,9 @@ msgstr "ログイン状態を保持"
 msgid "Forgot password?"
 msgstr "パスワードをお忘れですか？"
 
-#: .\templates\auth\login.html:87
+#: .\templates\auth\login.html:87 .\templates\auth\register.html:116
 msgid "Sign in"
-msgstr "ログイン"
+msgstr "サインイン"
 
 #: .\templates\auth\login.html:93
 msgid "Don't have an account?"
@@ -64,127 +64,630 @@ msgstr "アカウントをお持ちでないですか？"
 msgid "Create one for free"
 msgstr "無料で作成"
 
-#: .\templates\dashboard\base.html:11
+#: .\templates\auth\register.html:4
+msgid "Register"
+msgstr "登録"
+
+#: .\templates\auth\register.html:32
+msgid "Create your account"
+msgstr "アカウントを作成"
+
+#: .\templates\auth\register.html:33
+msgid "Start your free trial - no credit card required"
+msgstr "無料トライアルを開始 - クレジットカード不要"
+
+#: .\templates\auth\register.html:63 .\templates\dashboard\settings.html:29
+msgid "Company Name"
+msgstr "会社名"
+
+#: .\templates\auth\register.html:63
+#: .\templates\knowledge\partials\upload_form.html:48
+msgid "optional"
+msgstr "任意"
+
+#: .\templates\auth\register.html:85
+msgid "Confirm Password"
+msgstr "パスワード確認"
+
+#: .\templates\auth\register.html:98
+msgid "I agree to the"
+msgstr "以下に同意します："
+
+#: .\templates\auth\register.html:99
+msgid "Terms of Service"
+msgstr "利用規約"
+
+#: .\templates\auth\register.html:100
+msgid "and"
+msgstr "および"
+
+#: .\templates\auth\register.html:101
+msgid "Privacy Policy"
+msgstr "プライバシーポリシー"
+
+#: .\templates\auth\register.html:108
+msgid "Create account"
+msgstr "アカウントを作成"
+
+#: .\templates\auth\register.html:114
+msgid "Already have an account?"
+msgstr "すでにアカウントをお持ちですか？"
+
+#: .\templates\auth\register.html:122
+msgid "What you get with CalBol:"
+msgstr "CalBolでできること："
+
+#: .\templates\auth\register.html:128
+msgid "50 free auto-replies per month"
+msgstr "月50件の無料自動返信"
+
+#: .\templates\auth\register.html:134
+msgid "AI-powered responses from your knowledge base"
+msgstr "ナレッジベースを活用したAI応答"
+
+#: .\templates\auth\register.html:140
+msgid "Connect Email and WhatsApp"
+msgstr "メールとWhatsAppに連携"
+
+#: .\templates\dashboard\analytics.html:4 .\templates\dashboard\base.html:95
+#: .\templates\dashboard\base.html:102 .\templates\dashboard\base.html:103
+msgid "Analytics"
+msgstr "分析"
+
+#: .\templates\dashboard\analytics.html:5
+msgid "Track your performance metrics and insights"
+msgstr "パフォーマンス指標とインサイトを追跡"
+
+#: .\templates\dashboard\analytics.html:13
+msgid "Last 7 days"
+msgstr "過去7日間"
+
+#: .\templates\dashboard\analytics.html:14
+msgid "Last 30 days"
+msgstr "過去30日間"
+
+#: .\templates\dashboard\analytics.html:15
+msgid "Last 90 days"
+msgstr "過去90日間"
+
+#: .\templates\dashboard\analytics.html:30
+msgid "Export CSV"
+msgstr "CSVエクスポート"
+
+#: .\templates\dashboard\analytics.html:49
+msgid "Total Conversations"
+msgstr "総会話数"
+
+#: .\templates\dashboard\analytics.html:56
+msgid "resolved"
+msgstr "解決済み"
+
+#: .\templates\dashboard\analytics.html:73
+msgid "Total Messages"
+msgstr "総メッセージ数"
+
+#: .\templates\dashboard\analytics.html:76
+msgid "in"
+msgstr "受信"
+
+#: .\templates\dashboard\analytics.html:78
+msgid "out"
+msgstr "送信"
+
+#: .\templates\dashboard\analytics.html:94
+#: .\templates\dashboard\analytics.html:159
+msgid "AI Confidence"
+msgstr "AI信頼度"
+
+#: .\templates\dashboard\analytics.html:98
+msgid "success rate"
+msgstr "成功率"
+
+#: .\templates\dashboard\analytics.html:115
+msgid "Avg Response Time"
+msgstr "平均応答時間"
+
+#: .\templates\dashboard\analytics.html:117
+msgid "Processing time"
+msgstr "処理時間"
+
+#: .\templates\dashboard\analytics.html:127
+msgid "Message Volume"
+msgstr "メッセージ量"
+
+#: .\templates\dashboard\analytics.html:129
+#: .\templates\dashboard\analytics.html:337
+msgid "Inbound"
+msgstr "受信"
+
+#: .\templates\dashboard\analytics.html:130
+#: .\templates\dashboard\analytics.html:349
+msgid "Outbound"
+msgstr "送信"
+
+#: .\templates\dashboard\analytics.html:138
+msgid "Response Types"
+msgstr "応答タイプ"
+
+#: .\templates\dashboard\analytics.html:147
+msgid "Platform Breakdown"
+msgstr "プラットフォーム別内訳"
+
+#: .\templates\dashboard\analytics.html:153
+msgid "Conversation Status"
+msgstr "会話ステータス"
+
+#: .\templates\dashboard\analytics.html:168 .\templates\dashboard\home.html:12
+msgid "Monthly Usage"
+msgstr "月間使用量"
+
+#: .\templates\dashboard\analytics.html:172
+msgid "Replies Used"
+msgstr "使用済み返信数"
+
+#: .\templates\dashboard\analytics.html:187
+msgid "Unlimited plan"
+msgstr "無制限プラン"
+
+#: .\templates\dashboard\analytics.html:195 .\templates\dashboard\home.html:90
+msgid "AI Replies"
+msgstr "AI返信"
+
+#: .\templates\dashboard\analytics.html:202 .\templates\dashboard\base.html:159
+#: .\templates\dashboard\settings.html:55
+msgid "Plan"
+msgstr "プラン"
+
+#: .\templates\dashboard\analytics.html:213
+msgid "Top Predefined Replies"
+msgstr "人気の定型返信"
+
+#: .\templates\dashboard\analytics.html:239
+msgid "No predefined replies yet"
+msgstr "定型返信はまだありません"
+
+#: .\templates\dashboard\analytics.html:247 .\templates\dashboard\base.html:82
+#: .\templates\dashboard\base.html:89 .\templates\dashboard\base.html:90
+#: .\templates\knowledge\list.html:4
+msgid "Knowledge Base"
+msgstr "ナレッジベース"
+
+#: .\templates\dashboard\analytics.html:256
+msgid "Documents"
+msgstr "ドキュメント"
+
+#: .\templates\dashboard\analytics.html:265
+msgid "Processed"
+msgstr "処理済み"
+
+#: .\templates\dashboard\analytics.html:274
+msgid "Chunks"
+msgstr "チャンク"
+
+#: .\templates\dashboard\analytics.html:283
+msgid "Ready"
+msgstr "準備完了"
+
+#: .\templates\dashboard\analytics.html:291
+msgid "Busiest Hours"
+msgstr "最も忙しい時間帯"
+
+#: .\templates\dashboard\analytics.html:292
+msgid "Messages by hour of day"
+msgstr "時間帯別メッセージ数"
+
+#: .\templates\dashboard\analytics.html:452
+msgid "Responses"
+msgstr "応答"
+
+#: .\templates\dashboard\analytics.html:480
+msgid "Messages"
+msgstr "メッセージ"
+
+#: .\templates\dashboard\base.html:21
 msgid "Auto-Reply Assistant"
 msgstr "自動返信アシスタント"
 
-#: .\templates\dashboard\base.html:22 .\templates\dashboard\base.html:110
+#: .\templates\dashboard\base.html:31 .\templates\dashboard\base.html:35
+#: .\templates\dashboard\base.html:323 .\templates\dashboard\base.html:324
+msgid "Pin sidebar"
+msgstr "サイドバーを固定"
+
+#: .\templates\dashboard\base.html:43 .\templates\dashboard\base.html:50
+#: .\templates\dashboard\base.html:51 .\templates\dashboard\base.html:181
 #: .\templates\dashboard\home.html:4
 msgid "Dashboard"
 msgstr "ダッシュボード"
 
-#: .\templates\dashboard\base.html:31 .\templates\dashboard\home.html:36
+#: .\templates\dashboard\base.html:56 .\templates\dashboard\base.html:63
+#: .\templates\dashboard\base.html:64
+#: .\templates\dashboard\conversations.html:4
+#: .\templates\dashboard\home.html:33
 msgid "Conversations"
 msgstr "会話"
 
-#: .\templates\dashboard\base.html:40
+#: .\templates\dashboard\base.html:69 .\templates\dashboard\base.html:76
+#: .\templates\dashboard\base.html:77 .\templates\replies\list.html:4
 msgid "Predefined Replies"
 msgstr "定型返信"
 
-#: .\templates\dashboard\base.html:49
-msgid "Knowledge Base"
-msgstr "ナレッジベース"
-
-#: .\templates\dashboard\base.html:59
+#: .\templates\dashboard\base.html:109 .\templates\dashboard\base.html:117
+#: .\templates\dashboard\base.html:118 .\templates\dashboard\settings.html:4
 msgid "Settings"
 msgstr "設定"
 
-#: .\templates\dashboard\base.html:93
-msgid "Plan"
-msgstr "プラン"
+#: .\templates\dashboard\base.html:128 .\templates\dashboard\base.html:132
+msgid "Language"
+msgstr "言語"
 
-#: .\templates\dashboard\base.html:95
+#: .\templates\dashboard\base.html:165
 msgid "Logout"
 msgstr "ログアウト"
 
-#: .\templates\dashboard\home.html:11
-msgid "Monthly Usage"
-msgstr "月間使用量"
+#: .\templates\dashboard\base.html:319 .\templates\dashboard\base.html:320
+msgid "Unpin sidebar"
+msgstr "サイドバーの固定を解除"
 
-#: .\templates\dashboard\home.html:12
-msgid "of"
-msgstr "/"
+#: .\templates\dashboard\conversations.html:11
+msgid "Filter"
+msgstr "フィルター"
 
-#: .\templates\dashboard\home.html:12
-msgid "replies used"
-msgstr "件の返信を使用"
+#: .\templates\dashboard\conversations.html:12
+msgid "All"
+msgstr "すべて"
 
-#: .\templates\dashboard\home.html:52
+#: .\templates\dashboard\conversations.html:13
+#: .\templates\dashboard\home.html:51
+#: .\templates\replies\partials\reply_form.html:59
+#: .\templates\replies\partials\reply_row.html:28
 msgid "Active"
 msgstr "アクティブ"
 
-#: .\templates\dashboard\home.html:68
+#: .\templates\dashboard\conversations.html:14
+#: .\templates\dashboard\conversations.html:76
+#: .\templates\dashboard\home.html:72
 msgid "Needs Review"
 msgstr "要確認"
 
-#: .\templates\dashboard\home.html:84
-msgid "AI Replies"
-msgstr "AI返信"
+#: .\templates\dashboard\conversations.html:15
+msgid "Resolved"
+msgstr "解決済み"
 
-#: .\templates\dashboard\home.html:96
-msgid "Recent Conversations"
-msgstr "最近の会話"
+#: .\templates\dashboard\conversations.html:18
+msgid "Platform"
+msgstr "プラットフォーム"
 
-#: .\templates\dashboard\home.html:104 .\templates\dashboard\home.html:152
+#: .\templates\dashboard\conversations.html:20
+msgid "All Platforms"
+msgstr "全プラットフォーム"
+
+#: .\templates\dashboard\conversations.html:21
+#: .\templates\dashboard\settings.html:24
+#: .\templates\dashboard\settings.html:162
+msgid "Email"
+msgstr "メール"
+
+#: .\templates\dashboard\conversations.html:48
+#: .\templates\dashboard\home.html:127 .\templates\dashboard\home.html:194
 msgid "Unknown Customer"
 msgstr "不明な顧客"
 
-#: .\templates\dashboard\home.html:106
-msgid "via"
-msgstr "経由："
+#: .\templates\dashboard\conversations.html:50
+#, python-format
+msgid "%(time)s ago"
+msgstr "%(time)s前"
 
-#: .\templates\dashboard\home.html:116 .\templates\dashboard\home.html:157
-msgid "ago"
-msgstr "前"
+#: .\templates\dashboard\conversations.html:81
+#, python-format
+msgid "%(count)s messages"
+msgstr "%(count)s件のメッセージ"
 
-#: .\templates\dashboard\home.html:126
+#: .\templates\dashboard\conversations.html:100
+#: .\templates\dashboard\home.html:163
 msgid "No conversations yet"
 msgstr "会話はまだありません"
 
-#: .\templates\dashboard\home.html:127
-msgid "Connect a platform to start receiving messages"
-msgstr "プラットフォームを接続してメッセージの受信を開始"
+#: .\templates\dashboard\conversations.html:101
+msgid "Connect a platform and conversations will appear here."
+msgstr "プラットフォームを接続すると、ここに会話が表示されます。"
 
-#: .\templates\dashboard\home.html:136
-msgid "Needs Your Attention"
-msgstr "対応が必要"
-
-#: .\templates\dashboard\home.html:154
-msgid "AI couldn't handle this conversation"
-msgstr "AIがこの会話を処理できませんでした"
-
-#: .\templates\dashboard\home.html:167
-msgid "All caught up!"
-msgstr "すべて対応済み！"
-
-#: .\templates\dashboard\home.html:168
-msgid "No conversations need your attention"
-msgstr "対応が必要な会話はありません"
-
-#: .\templates\dashboard\home.html:177
-msgid "Quick Actions"
-msgstr "クイックアクション"
-
-#: .\templates\dashboard\home.html:187
-msgid "Add Predefined Reply"
-msgstr "定型返信を追加"
-
-#: .\templates\dashboard\home.html:188
-msgid "active"
-msgstr "件がアクティブ"
-
-#: .\templates\dashboard\home.html:201
-msgid "Upload Document"
-msgstr "ドキュメントをアップロード"
-
-#: .\templates\dashboard\home.html:202
-msgid "in knowledge base"
-msgstr "件がナレッジベースに登録済み"
-
-#: .\templates\dashboard\home.html:215
+#: .\templates\dashboard\conversations.html:104
+#: .\templates\dashboard\home.html:268
 msgid "Connect Platform"
 msgstr "プラットフォームを接続"
 
-#: .\templates\dashboard\home.html:216
-msgid "Email, WhatsApp, Instagram"
-msgstr "メール、WhatsApp、Instagram"
+#: .\templates\dashboard\home.html:5
+msgid "Welcome back! Here's what's happening with your auto-replies."
+msgstr "おかえりなさい！自動返信の状況をご確認ください。"
+
+#: .\templates\dashboard\home.html:13
+msgid "of"
+msgstr "/"
+
+#: .\templates\dashboard\home.html:13
+msgid "replies used"
+msgstr "件の返信を使用"
+
+#: .\templates\dashboard\home.html:35
+msgid "Total active"
+msgstr "アクティブな会話"
+
+#: .\templates\dashboard\home.html:55
+msgid "Live now"
+msgstr "現在対応中"
+
+#: .\templates\dashboard\home.html:74
+msgid "Awaiting action"
+msgstr "対応待ち"
+
+#: .\templates\dashboard\home.html:92
+msgid "Auto-generated"
+msgstr "自動生成"
+
+#: .\templates\dashboard\home.html:109
+msgid "Recent Conversations"
+msgstr "最近の会話"
+
+#: .\templates\dashboard\home.html:111
+msgid "View all"
+msgstr "すべて見る"
+
+#: .\templates\dashboard\home.html:151 .\templates\dashboard\home.html:199
+msgid "ago"
+msgstr "前"
+
+#: .\templates\dashboard\home.html:164
+msgid "Connect a platform to start receiving messages"
+msgstr "プラットフォームを接続してメッセージの受信を開始"
+
+#: .\templates\dashboard\home.html:173
+msgid "Needs Your Attention"
+msgstr "対応が必要"
+
+#: .\templates\dashboard\home.html:196
+msgid "AI couldn't handle this conversation"
+msgstr "AIがこの会話を処理できませんでした"
+
+#: .\templates\dashboard\home.html:214
+msgid "All caught up!"
+msgstr "すべて対応済み！"
+
+#: .\templates\dashboard\home.html:215
+msgid "No conversations need your attention"
+msgstr "対応が必要な会話はありません"
+
+#: .\templates\dashboard\home.html:224
+msgid "Quick Actions"
+msgstr "クイックアクション"
+
+#: .\templates\dashboard\home.html:234
+#: .\templates\replies\partials\reply_form.html:9
+msgid "Add Predefined Reply"
+msgstr "定型返信を追加"
+
+#: .\templates\dashboard\home.html:235
+msgid "active"
+msgstr "件アクティブ"
+
+#: .\templates\dashboard\home.html:251 .\templates\knowledge\list.html:15
+#: .\templates\knowledge\partials\document_grid.html:85
+#: .\templates\knowledge\partials\upload_form.html:8
+msgid "Upload Document"
+msgstr "ドキュメントをアップロード"
+
+#: .\templates\dashboard\home.html:252
+msgid "in knowledge base"
+msgstr "件がナレッジベースに登録済み"
+
+#: .\templates\dashboard\home.html:269
+msgid "Email, WhatsApp"
+msgstr "メール、WhatsApp"
+
+#: .\templates\dashboard\settings.html:5
+msgid "Manage your account and platform connections"
+msgstr "アカウントとプラットフォーム接続を管理"
+
+#: .\templates\dashboard\settings.html:18
+msgid "Account Settings"
+msgstr "アカウント設定"
+
+#: .\templates\dashboard\settings.html:36
+#: .\templates\replies\partials\reply_form.html:71
+msgid "Save Changes"
+msgstr "変更を保存"
+
+#: .\templates\dashboard\settings.html:50
+msgid "Subscription"
+msgstr "サブスクリプション"
+
+#: .\templates\dashboard\settings.html:57
+msgid "replies this month"
+msgstr "件の返信（今月）"
+
+#: .\templates\dashboard\settings.html:66
+msgid "Connected Platforms"
+msgstr "接続済みプラットフォーム"
+
+#: .\templates\dashboard\settings.html:163
+msgid "Forward emails to auto-reply"
+msgstr "メールを自動返信に転送"
+
+#: .\templates\dashboard\settings.html:167
+#: .\templates\dashboard\settings.html:185
+#: .\templates\dashboard\settings.html:203
+msgid "Connect"
+msgstr "接続"
+
+#: .\templates\dashboard\settings.html:180
+msgid "WhatsApp Business"
+msgstr "WhatsApp Business"
+
+#: .\templates\dashboard\settings.html:181
+msgid "Connect via WhatsApp Business API"
+msgstr "WhatsApp Business API経由で接続"
+
+#: .\templates\dashboard\settings.html:191
+msgid "Danger Zone"
+msgstr "危険ゾーン"
+
+#: .\templates\dashboard\settings.html:222
+#: .\templates\dashboard\settings.html:226
+msgid "Delete Account"
+msgstr "アカウントを削除"
+
+#: .\templates\dashboard\settings.html:223
+msgid "Permanently delete your account and all data"
+msgstr "アカウントとすべてのデータを完全に削除"
+
+#: .\templates\knowledge\list.html:28
+msgid "AI-Powered Knowledge Base"
+msgstr "AI搭載ナレッジベース"
+
+#: .\templates\knowledge\list.html:30
+msgid ""
+"Upload documents about your business (FAQs, product info, policies). The AI "
+"will use this knowledge to answer customer questions accurately."
+msgstr ""
+"ビジネスに関するドキュメント（FAQ、製品情報、ポリシーなど）をアップロードして"
+"ください。AIがこの知識を活用して、お客様の質問に正確に回答します。"
+
+#: .\templates\knowledge\partials\document_grid.html:51
+#, python-format
+msgid "Processed (%(chunks)s chunks)"
+msgstr "処理済み（%(chunks)s チャンク）"
+
+#: .\templates\knowledge\partials\document_grid.html:59
+msgid "Pending processing"
+msgstr "処理待ち"
+
+#: .\templates\knowledge\partials\document_grid.html:66
+#, python-format
+msgid "Uploaded %(time)s ago"
+msgstr "%(time)s前にアップロード"
+
+#: .\templates\knowledge\partials\document_grid.html:75
+msgid "No documents yet"
+msgstr "ドキュメントはまだありません"
+
+#: .\templates\knowledge\partials\document_grid.html:76
+msgid "Upload documents to train the AI on your business."
+msgstr ""
+"ドキュメントをアップロードして、AIをビジネスに合わせてトレーニングしましょ"
+"う。"
+
+#: .\templates\knowledge\partials\upload_form.html:34
+msgid "Click to upload"
+msgstr "クリックしてアップロード"
+
+#: .\templates\knowledge\partials\upload_form.html:34
+msgid "or drag and drop"
+msgstr "またはドラッグ＆ドロップ"
+
+#: .\templates\knowledge\partials\upload_form.html:36
+msgid "PDF, TXT, DOCX up to 10MB"
+msgstr "PDF、TXT、DOCX（10MBまで）"
+
+#: .\templates\knowledge\partials\upload_form.html:48
+msgid "Description"
+msgstr "説明"
+
+#: .\templates\knowledge\partials\upload_form.html:58
+#: .\templates\replies\partials\reply_form.html:67
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: .\templates\knowledge\partials\upload_form.html:62
+msgid "Upload"
+msgstr "アップロード"
+
+#: .\templates\replies\list.html:14
+#: .\templates\replies\partials\reply_list.html:20
+msgid "Add Reply"
+msgstr "返信を追加"
+
+#: .\templates\replies\list.html:27
+msgid "How Predefined Replies Work"
+msgstr "定型返信の仕組み"
+
+#: .\templates\replies\list.html:29
+msgid ""
+"When a customer message contains any of your keywords, the matching reply is "
+"sent automatically. Keywords are case-insensitive."
+msgstr ""
+"お客様のメッセージにキーワードが含まれている場合、一致する返信が自動的に送信"
+"されます。キーワードは大文字と小文字を区別しません。"
+
+#: .\templates\replies\list.html:40
+#: .\templates\replies\partials\reply_form.html:28
+msgid "Name"
+msgstr "名前"
+
+#: .\templates\replies\list.html:41
+#: .\templates\replies\partials\reply_form.html:38
+msgid "Keywords"
+msgstr "キーワード"
+
+#: .\templates\replies\list.html:42
+msgid "Status"
+msgstr "ステータス"
+
+#: .\templates\replies\list.html:43
+msgid "Used"
+msgstr "使用回数"
+
+#: .\templates\replies\list.html:44
+msgid "Actions"
+msgstr "アクション"
+
+#: .\templates\replies\partials\reply_form.html:9
+msgid "Edit Reply"
+msgstr "返信を編集"
+
+#: .\templates\replies\partials\reply_form.html:38
+msgid "comma separated"
+msgstr "カンマ区切り"
+
+#: .\templates\replies\partials\reply_form.html:44
+msgid "e.g., price, cost, how much, pricing"
+msgstr "例：価格、料金、いくら、値段"
+
+#: .\templates\replies\partials\reply_form.html:49
+msgid "Response"
+msgstr "返信内容"
+
+#: .\templates\replies\partials\reply_form.html:71
+msgid "Create Reply"
+msgstr "返信を作成"
+
+#: .\templates\replies\partials\reply_list.html:11
+msgid "No predefined replies"
+msgstr "定型返信はありません"
+
+#: .\templates\replies\partials\reply_list.html:12
+msgid "Get started by creating your first auto-reply."
+msgstr "最初の自動返信を作成して始めましょう。"
+
+#: .\templates\replies\partials\reply_row.html:16
+msgid "more"
+msgstr "件以上"
+
+#: .\templates\replies\partials\reply_row.html:32
+msgid "Inactive"
+msgstr "無効"
+
+#: .\templates\replies\partials\reply_row.html:38
+#, python-format
+msgid "%(count)s times"
+msgstr "%(count)s回"
+
+#: .\templates\replies\partials\reply_row.html:45
+msgid "Edit"
+msgstr "編集"
+
+#: .\templates\replies\partials\reply_row.html:50
+msgid "Are you sure you want to delete this reply?"
+msgstr "この返信を削除してもよろしいですか？"
+
+#: .\templates\replies\partials\reply_row.html:52
+msgid "Delete"
+msgstr "削除"
