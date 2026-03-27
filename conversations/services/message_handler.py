@@ -10,6 +10,7 @@ import logging
 import time
 from typing import Optional, Tuple
 from django.utils import timezone
+from django.db.models import F
 
 from conversations.models import Conversation, Message
 from replies.models import PredefinedReply
@@ -71,9 +72,6 @@ class MessageHandler:
             response_type == 'ai' and confidence < 0.5
         )
 
-        if needs_review:
-            conversation.needs_human_review = True
-            conversation.save()
 
         # Create the outbound message
         outbound_message = Message.objects.create(
@@ -87,8 +85,11 @@ class MessageHandler:
         )
 
         # Update conversation timestamp
+        # Update conversation with single save operation
+        # Consolidate needs_human_review update and timestamp update into one save
+        conversation.needs_human_review = needs_review
         conversation.updated_at = timezone.now()
-        conversation.save(update_fields=['updated_at', 'needs_human_review'])
+        conversation.save(update_fields=["needs_human_review", "updated_at"])
 
         # Increment usage counters
         self._update_usage(response_type, predefined_reply)
@@ -176,18 +177,31 @@ class MessageHandler:
         response_type: str,
         predefined_reply: Optional[PredefinedReply] = None
     ):
-        """Update usage counters."""
-        # Increment user's monthly reply count
-        self.user.monthly_replies += 1
-
+        """
+        Update usage counters atomically to prevent race conditions.
+        
+        Uses F() expressions for database-level atomic increments.
+        """
+        from accounts.models import User
+        
+        # Build update fields dict
+        update_fields = {'monthly_replies': F('monthly_replies') + 1}
+        
         if response_type == 'ai':
-            self.user.monthly_ai_replies += 1
-
-        self.user.save(update_fields=['monthly_replies', 'monthly_ai_replies'])
-
-        # Increment predefined reply usage
+            update_fields['monthly_ai_replies'] = F('monthly_ai_replies') + 1
+        
+        # Perform atomic update at database level
+        User.objects.filter(id=self.user.id).update(**update_fields)
+        
+        # Refresh user instance to get updated values
+        # This is necessary because F() expressions don't update the in-memory object
+        self.user.refresh_from_db(fields=['monthly_replies', 'monthly_ai_replies'])
+        
+        # Increment predefined reply usage counter atomically
         if predefined_reply:
-            predefined_reply.increment_use_count()
+            PredefinedReply.objects.filter(id=predefined_reply.id).update(
+                use_count=F('use_count') + 1
+            )
 
 
 def handle_incoming_message(

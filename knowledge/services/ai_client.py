@@ -27,6 +27,7 @@ class AIClient:
             self.client = None
         else:
             self.client = OpenAI(api_key=api_key)
+            self.timeout = 30.0  # 30 second timeout for API calls
 
         # Default models
         self.chat_model = "gpt-4o-mini"  # Fast and cheap for auto-replies
@@ -135,7 +136,8 @@ Guidelines:
 
             response = self.client.embeddings.create(
                 model=self.embedding_model,
-                input=text
+                input=text,
+                timeout=self.timeout
             )
 
             return response.data[0].embedding
@@ -163,7 +165,8 @@ Guidelines:
 
             response = self.client.embeddings.create(
                 model=self.embedding_model,
-                input=texts
+                input=texts,
+                timeout=self.timeout
             )
 
             # Sort by index to maintain order
