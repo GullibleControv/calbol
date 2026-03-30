@@ -74,11 +74,12 @@ class WhatsAppProcessor:
                 # Get message content to process
                 content = message.get_display_content()
 
-                # Process through message handler
+                # Process through message handler (pass message_id for idempotency)
                 handler = MessageHandler(self.user)
                 response_message = handler.process_message(
                     conversation=conversation,
-                    content=content
+                    content=content,
+                    external_id=message.message_id
                 )
 
                 # Mark incoming message as read

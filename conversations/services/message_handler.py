@@ -40,7 +40,8 @@ class MessageHandler:
     def process_message(
         self,
         conversation: Conversation,
-        content: str
+        content: str,
+        external_id: Optional[str] = None
     ) -> Message:
         """
         Process an incoming message and generate a response.
@@ -48,17 +49,19 @@ class MessageHandler:
         Args:
             conversation: The conversation this message belongs to
             content: The message content from the customer
+            external_id: Platform's unique message ID for idempotency (optional)
 
         Returns:
             The outbound Message object (response)
         """
         start_time = time.time()
 
-        # Save the inbound message
+        # Save the inbound message with external_id for idempotency tracking
         inbound_message = Message.objects.create(
             conversation=conversation,
             direction='inbound',
-            content=content
+            content=content,
+            external_id=external_id
         )
 
         # Try to generate a response

@@ -15,11 +15,14 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.core.cache import cache
 
-from conversations.models import Platform
+from conversations.models import Platform, Message
 from .receiver import WhatsAppWebhookHandler
 from .processor import WhatsAppProcessor
 
 logger = logging.getLogger(__name__)
+
+# Idempotency cache TTL (prevent duplicate processing within this window)
+IDEMPOTENCY_CACHE_TTL = 3600  # 1 hour
 
 # Rate limiting constants
 WEBHOOK_RATE_LIMIT = 500  # requests per hour
@@ -133,6 +136,9 @@ class WhatsAppWebhookView(View):
         """
         Process a single message by finding the appropriate platform.
 
+        Implements idempotency to prevent duplicate processing of webhooks.
+        Uses indexed phone_number_id for O(1) platform lookup.
+
         Args:
             message: InboundWhatsAppMessage object
 
@@ -140,23 +146,52 @@ class WhatsAppWebhookView(View):
             dict with processing result
         """
         try:
-            # Find platform by phone number ID
-            # Note: credentials is encrypted, so we filter in Python
-            whatsapp_platforms = Platform.objects.filter(
+            # IDEMPOTENCY CHECK: Prevent duplicate processing
+            # WhatsApp may send the same webhook multiple times
+            if message.message_id:
+                # Check cache first (fast path)
+                cache_key = f"wa_processed:{message.message_id}"
+                if cache.get(cache_key):
+                    logger.info(f"Skipping duplicate webhook (cache): {message.message_id}")
+                    return {
+                        'success': True,
+                        'status': 'duplicate',
+                        'from': message.from_number
+                    }
+
+                # Check database (authoritative)
+                if Message.objects.filter(external_id=message.message_id).exists():
+                    # Cache for future duplicate checks
+                    cache.set(cache_key, True, IDEMPOTENCY_CACHE_TTL)
+                    logger.info(f"Skipping duplicate webhook (db): {message.message_id}")
+                    return {
+                        'success': True,
+                        'status': 'duplicate',
+                        'from': message.from_number
+                    }
+
+            # OPTIMIZED PLATFORM LOOKUP: Use indexed phone_number_id field
+            # O(1) lookup instead of loading all platforms and iterating
+            platform = Platform.objects.filter(
                 platform_type='whatsapp',
+                phone_number_id=message.phone_number_id,
                 is_active=True
-            )
+            ).first()
 
-            # Find matching platform by phone_number_id in credentials
-            platform = None
-            for p in whatsapp_platforms:
-                if p.credentials.get('phone_number_id') == message.phone_number_id:
-                    platform = p
-                    break
-
-            # Fallback: use any active WhatsApp platform (for dev/testing)
-            if not platform and whatsapp_platforms.exists():
-                platform = whatsapp_platforms.first()
+            # Fallback: Check credentials field if phone_number_id not migrated yet
+            if not platform:
+                whatsapp_platforms = Platform.objects.filter(
+                    platform_type='whatsapp',
+                    is_active=True
+                )
+                for p in whatsapp_platforms:
+                    if p.credentials.get('phone_number_id') == message.phone_number_id:
+                        platform = p
+                        # Auto-migrate: Update phone_number_id for future fast lookups
+                        p.phone_number_id = message.phone_number_id
+                        p.save(update_fields=['phone_number_id'])
+                        logger.info(f"Auto-migrated phone_number_id for platform {p.id}")
+                        break
 
             if not platform:
                 logger.warning(
@@ -168,18 +203,22 @@ class WhatsAppWebhookView(View):
                     'from': message.from_number
                 }
 
-            # Process the message
+            # Process the message (pass external_id for storage)
             processor = WhatsAppProcessor(platform)
             result = processor.process_inbound(message)
             result['from'] = message.from_number
 
+            # Mark as processed in cache
+            if message.message_id:
+                cache.set(f"wa_processed:{message.message_id}", True, IDEMPOTENCY_CACHE_TTL)
+
             return result
 
         except Exception as e:
-            logger.error(f"Error processing WhatsApp message: {e}")
+            logger.error(f"Error processing WhatsApp message: {e}", exc_info=True)
             return {
                 'success': False,
-                'error': str(e),
+                'error': 'Internal processing error',
                 'from': message.from_number
             }
 

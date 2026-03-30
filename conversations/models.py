@@ -64,6 +64,16 @@ class Platform(models.Model):
         """Set credentials from a dictionary."""
         self._credentials = json.dumps(value) if value else '{}'
 
+    # Indexed lookup field for WhatsApp phone_number_id
+    # This allows O(1) lookup instead of decrypting all credentials
+    phone_number_id = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        db_index=True,
+        help_text="WhatsApp phone number ID for fast webhook lookup"
+    )
+
     # Platform-specific settings
     settings_data = models.JSONField(
         default=dict,
@@ -282,6 +292,16 @@ class Message(models.Model):
         help_text="Whether the message was successfully delivered"
     )
 
+    # External message ID for idempotency (prevents duplicate processing)
+    # Stores the platform's unique message ID (e.g., WhatsApp's wamid)
+    external_id = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        db_index=True,
+        help_text="Platform's unique message ID for idempotency"
+    )
+
     # Timestamp
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -295,6 +315,14 @@ class Message(models.Model):
             models.Index(fields=['conversation', 'created_at'], name='msg_conv_created_idx'),
             # Analytics queries: count messages by response type
             models.Index(fields=['response_type'], name='msg_response_type_idx'),
+        ]
+        constraints = [
+            # Ensure external_id is unique when not null (idempotency)
+            models.UniqueConstraint(
+                fields=['external_id'],
+                condition=models.Q(external_id__isnull=False),
+                name='unique_external_id_when_set'
+            ),
         ]
 
     def __str__(self):
