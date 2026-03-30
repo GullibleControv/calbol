@@ -4,8 +4,20 @@
 {% block title %}{% trans "Register" %} - CalBol{% endblock %}
 
 {% block body %}
-<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-accent-50 via-white to-coral-50 relative overflow-hidden">
+    <!-- Decorative Elements -->
+    <div class="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-accent-300/30 to-coral-300/20 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-br from-mint-300/25 to-sky-300/15 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl"></div>
+    <div class="absolute top-1/3 right-10 w-16 h-16 bg-lavender-400/30 rounded-full blur-xl animate-float"></div>
+    <div class="absolute bottom-1/3 left-10 w-20 h-20 bg-lemon-400/25 rounded-full blur-xl animate-float" style="animation-delay: 2s;"></div>
+
+    <!-- Floating Decorative Emojis -->
+    <div class="absolute top-20 left-20 text-4xl opacity-20 animate-float" style="animation-delay: 0.5s;">🎉</div>
+    <div class="absolute top-32 right-24 text-3xl opacity-20 animate-float" style="animation-delay: 1.5s;">🚀</div>
+    <div class="absolute bottom-32 left-32 text-3xl opacity-20 animate-float" style="animation-delay: 2.5s;">✨</div>
+    <div class="absolute bottom-20 right-20 text-4xl opacity-20 animate-float" style="animation-delay: 3s;">💬</div>
+
+    <div class="max-w-md w-full space-y-8 relative z-10">
         <!-- Language Switcher (top right) -->
         <div class="flex justify-end">
             <form action="{% url 'set_language' %}" method="post" class="flex items-center space-x-2">
@@ -13,7 +25,7 @@
                 <input type="hidden" name="next" value="{{ request.path }}">
                 <select name="language"
                         onchange="this.form.submit()"
-                        class="bg-white text-gray-700 text-sm rounded border-gray-300 focus:ring-primary-500 focus:border-primary-500 py-1 px-2">
+                        class="bg-white/80 backdrop-blur-sm text-gray-700 text-sm rounded-full border-0 shadow-soft focus:ring-2 focus:ring-primary-500 py-2 px-4 font-medium">
                     {% get_current_language as LANGUAGE_CODE %}
                     {% get_available_languages as LANGUAGES %}
                     {% for lang_code, lang_name in LANGUAGES %}
@@ -27,120 +39,154 @@
 
         <!-- Logo and Header -->
         <div class="text-center">
-            <h1 class="text-4xl font-bold text-primary-600">CalBol</h1>
-            <p class="mt-2 text-gray-600">{% trans "Auto-reply assistant for busy professionals" %}</p>
-            <h2 class="mt-6 text-2xl font-semibold text-gray-900">{% trans "Create your account" %}</h2>
-            <p class="mt-2 text-gray-500">{% trans "Start your free trial - no credit card required" %}</p>
+            <div class="w-20 h-20 bg-gradient-to-br from-accent-500 via-coral-500 to-lemon-500 rounded-3xl flex items-center justify-center mx-auto shadow-playful-lg mb-4 icon-box animate-pop">
+                <span class="text-4xl">🎉</span>
+            </div>
+            <h1 class="text-5xl font-extrabold gradient-text mb-2">CalBol</h1>
+            <p class="text-gray-600 font-medium">{% trans "Auto-reply assistant for busy professionals" %} <span class="emoji-hover">✨</span></p>
+            <h2 class="mt-8 text-2xl font-bold text-gray-900">{% trans "Create your account" %}</h2>
+            <p class="mt-2 text-gray-500">{% trans "Start your free trial - no credit card required" %} <span class="emoji-hover">🎯</span></p>
         </div>
 
         <!-- Register Form -->
-        <form method="post" class="mt-8 space-y-6 bg-white p-8 rounded-xl shadow-lg">
+        <form method="post" class="mt-8 space-y-6 bg-white/80 glass p-8 rounded-3xl shadow-playful-lg border border-white/50">
             {% csrf_token %}
 
             <!-- Error Messages -->
             {% if form.non_field_errors %}
-            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                {% for error in form.non_field_errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
+            <div class="bg-gradient-to-r from-red-50 to-coral-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-xl animate-shake">
+                <div class="flex items-center">
+                    <span class="text-xl mr-2">⚠️</span>
+                    {% for error in form.non_field_errors %}
+                    <p class="font-medium">{{ error }}</p>
+                    {% endfor %}
+                </div>
             </div>
             {% endif %}
 
             <!-- Email Field -->
             <div>
-                <label for="id_email" class="block text-sm font-medium text-gray-700 mb-1">
-                    {% trans "Email address" %}
+                <label for="id_email" class="block text-sm font-semibold text-gray-700 mb-2">
+                    <span class="mr-1">📧</span> {% trans "Email address" %}
                 </label>
-                {{ form.email }}
+                <input type="email" name="email" id="id_email" autocomplete="email" required
+                       class="w-full px-4 py-3 border-2 border-surface-200 rounded-xl input-animated focus:border-primary-500 focus:ring-0 text-gray-900 font-medium placeholder-gray-400"
+                       placeholder="{% trans 'Enter your email' %}"
+                       value="{{ form.email.value|default:'' }}">
                 {% if form.email.errors %}
-                <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+                <p class="mt-2 text-sm text-red-600 font-medium flex items-center">
+                    <span class="mr-1">❌</span> {{ form.email.errors.0 }}
+                </p>
                 {% endif %}
             </div>
 
             <!-- Company Name Field -->
             <div>
-                <label for="id_company_name" class="block text-sm font-medium text-gray-700 mb-1">
-                    {% trans "Company Name" %} <span class="text-gray-400">({% trans "optional" %})</span>
+                <label for="id_company_name" class="block text-sm font-semibold text-gray-700 mb-2">
+                    <span class="mr-1">🏢</span> {% trans "Company Name" %} <span class="text-gray-400 font-normal">({% trans "optional" %})</span>
                 </label>
-                {{ form.company_name }}
+                <input type="text" name="company_name" id="id_company_name"
+                       class="w-full px-4 py-3 border-2 border-surface-200 rounded-xl input-animated focus:border-primary-500 focus:ring-0 text-gray-900 font-medium placeholder-gray-400"
+                       placeholder="{% trans 'Your company name' %}"
+                       value="{{ form.company_name.value|default:'' }}">
                 {% if form.company_name.errors %}
-                <p class="mt-1 text-sm text-red-600">{{ form.company_name.errors.0 }}</p>
+                <p class="mt-2 text-sm text-red-600 font-medium flex items-center">
+                    <span class="mr-1">❌</span> {{ form.company_name.errors.0 }}
+                </p>
                 {% endif %}
             </div>
 
             <!-- Password Field -->
             <div>
-                <label for="id_password1" class="block text-sm font-medium text-gray-700 mb-1">
-                    {% trans "Password" %}
+                <label for="id_password1" class="block text-sm font-semibold text-gray-700 mb-2">
+                    <span class="mr-1">🔒</span> {% trans "Password" %}
                 </label>
-                {{ form.password1 }}
+                <input type="password" name="password1" id="id_password1" autocomplete="new-password" required
+                       class="w-full px-4 py-3 border-2 border-surface-200 rounded-xl input-animated focus:border-primary-500 focus:ring-0 text-gray-900 font-medium placeholder-gray-400"
+                       placeholder="{% trans 'Create a password' %}">
                 {% if form.password1.errors %}
-                <p class="mt-1 text-sm text-red-600">{{ form.password1.errors.0 }}</p>
+                <p class="mt-2 text-sm text-red-600 font-medium flex items-center">
+                    <span class="mr-1">❌</span> {{ form.password1.errors.0 }}
+                </p>
                 {% endif %}
             </div>
 
             <!-- Confirm Password Field -->
             <div>
-                <label for="id_password2" class="block text-sm font-medium text-gray-700 mb-1">
-                    {% trans "Confirm Password" %}
+                <label for="id_password2" class="block text-sm font-semibold text-gray-700 mb-2">
+                    <span class="mr-1">🔐</span> {% trans "Confirm Password" %}
                 </label>
-                {{ form.password2 }}
+                <input type="password" name="password2" id="id_password2" autocomplete="new-password" required
+                       class="w-full px-4 py-3 border-2 border-surface-200 rounded-xl input-animated focus:border-primary-500 focus:ring-0 text-gray-900 font-medium placeholder-gray-400"
+                       placeholder="{% trans 'Confirm your password' %}">
                 {% if form.password2.errors %}
-                <p class="mt-1 text-sm text-red-600">{{ form.password2.errors.0 }}</p>
+                <p class="mt-2 text-sm text-red-600 font-medium flex items-center">
+                    <span class="mr-1">❌</span> {{ form.password2.errors.0 }}
+                </p>
                 {% endif %}
             </div>
 
             <!-- Terms -->
-            <div class="flex items-start">
+            <div class="flex items-start bg-surface-50 p-4 rounded-2xl">
                 <input id="terms" name="terms" type="checkbox" required
-                       class="h-4 w-4 mt-0.5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
-                <label for="terms" class="ml-2 block text-sm text-gray-600">
+                       class="h-5 w-5 mt-0.5 text-primary-600 focus:ring-primary-500 border-2 border-surface-300 rounded-lg">
+                <label for="terms" class="ml-3 block text-sm text-gray-600">
                     {% trans "I agree to the" %}
-                    <a href="#" class="text-primary-600 hover:text-primary-500">{% trans "Terms of Service" %}</a>
+                    <a href="#" class="text-primary-600 hover:text-accent-600 font-semibold transition-colors">{% trans "Terms of Service" %}</a>
                     {% trans "and" %}
-                    <a href="#" class="text-primary-600 hover:text-primary-500">{% trans "Privacy Policy" %}</a>
+                    <a href="#" class="text-primary-600 hover:text-accent-600 font-semibold transition-colors">{% trans "Privacy Policy" %}</a>
                 </label>
             </div>
 
             <!-- Submit Button -->
             <button type="submit"
-                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
-                {% trans "Create account" %}
+                    class="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-2xl shadow-playful text-base font-bold text-white bg-gradient-to-r from-accent-500 via-coral-500 to-lemon-500 hover:from-accent-600 hover:via-coral-600 hover:to-lemon-600 focus:outline-none focus:ring-4 focus:ring-accent-500/30 transition-all duration-300 btn-playful">
+                <span class="mr-2">🚀</span> {% trans "Create account" %}
             </button>
         </form>
 
         <!-- Login Link -->
-        <p class="text-center text-gray-600">
-            {% trans "Already have an account?" %}
-            <a href="{% url 'login' %}" class="text-primary-600 hover:text-primary-500 font-medium">
-                {% trans "Sign in" %}
-            </a>
-        </p>
+        <div class="text-center bg-white/60 glass rounded-2xl py-4 px-6 shadow-soft">
+            <p class="text-gray-600 font-medium">
+                {% trans "Already have an account?" %}
+                <a href="{% url 'login' %}" class="text-primary-600 hover:text-accent-600 font-bold ml-1 transition-colors">
+                    {% trans "Sign in" %} <span class="emoji-hover">👋</span>
+                </a>
+            </p>
+        </div>
 
         <!-- Features Preview -->
-        <div class="bg-white p-6 rounded-xl shadow-lg">
-            <h3 class="text-sm font-semibold text-gray-900 mb-4">{% trans "What you get with CalBol:" %}</h3>
+        <div class="bg-white/80 glass p-6 rounded-3xl shadow-soft border border-white/50">
+            <h3 class="text-sm font-bold text-gray-900 mb-4 flex items-center">
+                <span class="mr-2">🎁</span> {% trans "What you get with CalBol:" %}
+            </h3>
             <ul class="space-y-3">
-                <li class="flex items-center text-sm text-gray-600">
-                    <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    {% trans "50 free auto-replies per month" %}
+                <li class="flex items-center text-sm text-gray-600 bg-mint-50/50 rounded-xl p-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-mint-400 to-mint-500 rounded-lg flex items-center justify-center mr-3 shadow-sm">
+                        <span class="text-sm">✅</span>
+                    </div>
+                    <span class="font-medium">{% trans "50 free auto-replies per month" %}</span>
                 </li>
-                <li class="flex items-center text-sm text-gray-600">
-                    <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    {% trans "AI-powered responses from your knowledge base" %}
+                <li class="flex items-center text-sm text-gray-600 bg-lavender-50/50 rounded-xl p-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-lavender-400 to-lavender-500 rounded-lg flex items-center justify-center mr-3 shadow-sm">
+                        <span class="text-sm">🧠</span>
+                    </div>
+                    <span class="font-medium">{% trans "AI-powered responses from your knowledge base" %}</span>
                 </li>
-                <li class="flex items-center text-sm text-gray-600">
-                    <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    {% trans "Connect Email and WhatsApp" %}
+                <li class="flex items-center text-sm text-gray-600 bg-sky-50/50 rounded-xl p-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-sky-400 to-sky-500 rounded-lg flex items-center justify-center mr-3 shadow-sm">
+                        <span class="text-sm">🔗</span>
+                    </div>
+                    <span class="font-medium">{% trans "Connect Email and WhatsApp" %}</span>
                 </li>
             </ul>
         </div>
     </div>
 </div>
+
+<style>
+    .animate-pop {
+        animation: pop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+</style>
 {% endblock %}

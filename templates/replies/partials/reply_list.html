@@ -1,22 +1,20 @@
+{% load i18n %}
 {% for reply in replies %}
 {% include 'replies/partials/reply_row.html' %}
 {% empty %}
 <tr>
-    <td colspan="5" class="px-6 py-12 text-center">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
-        </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900">No predefined replies</h3>
-        <p class="mt-1 text-sm text-gray-500">Get started by creating your first auto-reply.</p>
+    <td colspan="5" class="px-6 py-16 text-center">
+        <div class="w-24 h-24 bg-gradient-to-br from-coral-100 via-lemon-100 to-mint-100 rounded-3xl flex items-center justify-center mx-auto mb-6 animate-float shadow-playful">
+            <span class="text-5xl">⚡</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">{% trans "No predefined replies" %}</h3>
+        <p class="text-gray-500 mb-6 max-w-md mx-auto">{% trans "Get started by creating your first auto-reply!" %} <span class="emoji-hover">✨</span></p>
         <button hx-get="{% url 'replies:create' %}"
                 hx-target="#modal-container"
                 hx-swap="innerHTML"
-                class="mt-4 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-            </svg>
-            Add Reply
+                class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-coral-500 to-lemon-500 text-white font-bold rounded-2xl shadow-playful hover:from-coral-600 hover:to-lemon-600 transition-all btn-playful">
+            <span class="mr-2">➕</span>
+            {% trans "Add Reply" %}
         </button>
     </td>
 </tr>

@@ -1,18 +1,26 @@
-<tr id="reply-{{ reply.pk }}" class="hover:bg-gray-50">
+{% load i18n %}
+<tr id="reply-{{ reply.pk }}" class="hover:bg-gradient-to-r hover:from-primary-50/30 hover:to-accent-50/30 transition-all duration-200 group">
     <td class="px-6 py-4 whitespace-nowrap">
-        <div class="text-sm font-medium text-gray-900">{{ reply.name }}</div>
-        <div class="text-sm text-gray-500 truncate max-w-xs">{{ reply.response|truncatewords:10 }}</div>
+        <div class="flex items-center">
+            <div class="w-10 h-10 bg-gradient-to-br from-coral-400 to-lemon-500 rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                <span class="text-sm">⚡</span>
+            </div>
+            <div class="ml-3">
+                <div class="text-sm font-bold text-gray-900">{{ reply.name }}</div>
+                <div class="text-sm text-gray-500 truncate max-w-xs">{{ reply.response|truncatewords:10 }}</div>
+            </div>
+        </div>
     </td>
     <td class="px-6 py-4">
-        <div class="flex flex-wrap gap-1">
+        <div class="flex flex-wrap gap-1.5">
             {% for keyword in reply.keywords|slice:":3" %}
-            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                {{ keyword }}
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-primary-100 to-accent-100 text-primary-700 shadow-sm">
+                <span class="mr-1">🏷️</span> {{ keyword }}
             </span>
             {% endfor %}
             {% if reply.keywords|length > 3 %}
-            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-500">
-                +{{ reply.keywords|length|add:"-3" }} more
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-surface-100 text-gray-500">
+                +{{ reply.keywords|length|add:"-3" }} {% trans "more" %}
             </span>
             {% endif %}
         </div>
@@ -21,34 +29,40 @@
         <button hx-post="{% url 'replies:toggle' reply.pk %}"
                 hx-target="#reply-{{ reply.pk }}"
                 hx-swap="outerHTML"
-                class="focus:outline-none">
+                class="focus:outline-none transition-transform hover:scale-105">
             {% if reply.is_active %}
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 cursor-pointer hover:bg-green-200">
-                Active
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-mint-400 to-mint-500 text-white shadow-sm cursor-pointer">
+                <span class="mr-1">✅</span> {% trans "Active" %}
             </span>
             {% else %}
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 cursor-pointer hover:bg-gray-200">
-                Inactive
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-surface-200 text-gray-600 cursor-pointer hover:bg-surface-300">
+                <span class="mr-1">⏸️</span> {% trans "Inactive" %}
             </span>
             {% endif %}
         </button>
     </td>
-    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {{ reply.use_count }} times
+    <td class="px-6 py-4 whitespace-nowrap">
+        <div class="flex items-center">
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-lavender-100 to-lavender-200 text-lavender-700 shadow-sm">
+                <span class="mr-1">📊</span> {% blocktrans with count=reply.use_count %}{{ count }} times{% endblocktrans %}
+            </span>
+        </div>
     </td>
     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-        <button hx-get="{% url 'replies:edit' reply.pk %}"
-                hx-target="#modal-container"
-                hx-swap="innerHTML"
-                class="text-primary-600 hover:text-primary-900 mr-3">
-            Edit
-        </button>
-        <button hx-delete="{% url 'replies:delete' reply.pk %}"
-                hx-target="#replies-list"
-                hx-swap="innerHTML"
-                hx-confirm="Are you sure you want to delete '{{ reply.name }}'?"
-                class="text-red-600 hover:text-red-900">
-            Delete
-        </button>
+        <div class="flex items-center justify-end gap-2">
+            <button hx-get="{% url 'replies:edit' reply.pk %}"
+                    hx-target="#modal-container"
+                    hx-swap="innerHTML"
+                    class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-100 text-sky-700 hover:bg-sky-200 transition-all">
+                <span class="mr-1">✏️</span> {% trans "Edit" %}
+            </button>
+            <button hx-delete="{% url 'replies:delete' reply.pk %}"
+                    hx-target="#replies-list"
+                    hx-swap="innerHTML"
+                    hx-confirm="{% trans "Are you sure you want to delete this reply?" %}"
+                    class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-red-100 text-red-700 hover:bg-red-200 transition-all">
+                <span class="mr-1">🗑️</span> {% trans "Delete" %}
+            </button>
+        </div>
     </td>
 </tr>
