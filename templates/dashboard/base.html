@@ -2,75 +2,117 @@
 {% load i18n %}
 
 {% block body %}
-<div class="flex h-screen bg-gray-100">
+<div class="flex h-screen bg-surface-50">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-900 text-white flex flex-col">
+    <aside id="sidebar"
+           class="sidebar-collapsed bg-white border-r border-surface-200 flex flex-col shadow-soft transition-all duration-300 ease-in-out"
+           onmouseenter="expandSidebar()"
+           onmouseleave="collapseSidebar()">
         <!-- Logo -->
-        <div class="p-6 border-b border-gray-800">
-            <h1 class="text-2xl font-bold text-primary-400">CalBol</h1>
-            <p class="text-xs text-gray-400 mt-1">{% trans "Auto-Reply Assistant" %}</p>
+        <div class="p-4 border-b border-surface-100 bg-gradient-to-r from-primary-50/50 to-accent-50/50">
+            <div class="flex items-center">
+                <div class="w-11 h-11 bg-gradient-to-br from-primary-500 via-accent-500 to-coral-500 rounded-2xl flex items-center justify-center shadow-playful flex-shrink-0 icon-box">
+                    <span class="text-2xl">💬</span>
+                </div>
+                <div class="sidebar-text ml-3 overflow-hidden whitespace-nowrap">
+                    <h1 class="text-xl font-extrabold gradient-text">CalBol</h1>
+                    <p class="text-xs text-gray-500 font-medium">{% trans "Auto-Reply Assistant" %} <span class="emoji-hover">✨</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pin/Unpin Toggle Button -->
+        <div class="px-3 py-2 border-b border-surface-100">
+            <button id="sidebar-toggle"
+                    onclick="toggleSidebarPin()"
+                    class="w-full flex items-center justify-center p-2 rounded-lg hover:bg-surface-100 transition-colors group"
+                    title="{% trans 'Pin sidebar' %}">
+                <svg id="pin-icon" class="w-5 h-5 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+                <span class="sidebar-text ml-2 text-sm text-gray-500 group-hover:text-gray-700 overflow-hidden whitespace-nowrap">{% trans "Pin sidebar" %}</span>
+            </button>
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 py-4">
+        <nav class="flex-1 py-4 px-2 space-y-1.5 overflow-y-auto overflow-x-hidden">
             <a href="{% url 'dashboard:home' %}"
-               class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors {% if request.resolver_match.url_name == 'home' %}bg-gray-800 text-white border-r-4 border-primary-500{% endif %}">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                </svg>
-                {% trans "Dashboard" %}
+               class="nav-item group relative flex items-center px-3 py-3 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50/50 transition-all duration-200 {% if request.resolver_match.url_name == 'home' %}active bg-gradient-to-r from-primary-50 to-accent-50/50 text-primary-700{% endif %}"
+               data-tooltip="{% trans 'Dashboard' %}">
+                <div class="w-10 h-10 rounded-xl {% if request.resolver_match.url_name == 'home' %}bg-gradient-to-br from-primary-500 to-primary-600 shadow-glow{% else %}bg-gradient-to-br from-surface-100 to-surface-200{% endif %} flex items-center justify-center flex-shrink-0 transition-all icon-box">
+                    <span class="text-lg">🏠</span>
+                </div>
+                <span class="sidebar-text ml-3 font-semibold overflow-hidden whitespace-nowrap">{% trans "Dashboard" %}</span>
+                <span class="nav-tooltip">{% trans "Dashboard" %}</span>
             </a>
 
             <a href="{% url 'dashboard:conversations' %}"
-               class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors {% if request.resolver_match.url_name == 'conversations' %}bg-gray-800 text-white border-r-4 border-primary-500{% endif %}">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                </svg>
-                {% trans "Conversations" %}
+               class="nav-item group relative flex items-center px-3 py-3 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-accent-50 hover:to-coral-50/50 transition-all duration-200 {% if request.resolver_match.url_name == 'conversations' %}active bg-gradient-to-r from-accent-50 to-coral-50/50 text-accent-700{% endif %}"
+               data-tooltip="{% trans 'Conversations' %}">
+                <div class="w-10 h-10 rounded-xl {% if request.resolver_match.url_name == 'conversations' %}bg-gradient-to-br from-accent-500 to-coral-500 shadow-glow-accent{% else %}bg-gradient-to-br from-surface-100 to-surface-200{% endif %} flex items-center justify-center flex-shrink-0 transition-all icon-box">
+                    <span class="text-lg">💬</span>
+                </div>
+                <span class="sidebar-text ml-3 font-semibold overflow-hidden whitespace-nowrap">{% trans "Conversations" %}</span>
+                <span class="nav-tooltip">{% trans "Conversations" %}</span>
             </a>
 
             <a href="{% url 'replies:list' %}"
-               class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors {% if 'replies' in request.path %}bg-gray-800 text-white border-r-4 border-primary-500{% endif %}">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
-                </svg>
-                {% trans "Predefined Replies" %}
+               class="nav-item group relative flex items-center px-3 py-3 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-coral-50 hover:to-lemon-50/50 transition-all duration-200 {% if 'replies' in request.path %}active bg-gradient-to-r from-coral-50 to-lemon-50/50 text-coral-700{% endif %}"
+               data-tooltip="{% trans 'Predefined Replies' %}">
+                <div class="w-10 h-10 rounded-xl {% if 'replies' in request.path %}bg-gradient-to-br from-coral-500 to-lemon-500 shadow-glow-coral{% else %}bg-gradient-to-br from-surface-100 to-surface-200{% endif %} flex items-center justify-center flex-shrink-0 transition-all icon-box">
+                    <span class="text-lg">⚡</span>
+                </div>
+                <span class="sidebar-text ml-3 font-semibold overflow-hidden whitespace-nowrap">{% trans "Predefined Replies" %}</span>
+                <span class="nav-tooltip">{% trans "Predefined Replies" %}</span>
             </a>
 
             <a href="{% url 'knowledge:list' %}"
-               class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors {% if 'knowledge' in request.path %}bg-gray-800 text-white border-r-4 border-primary-500{% endif %}">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                {% trans "Knowledge Base" %}
+               class="nav-item group relative flex items-center px-3 py-3 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-mint-50 hover:to-sky-50/50 transition-all duration-200 {% if 'knowledge' in request.path %}active bg-gradient-to-r from-mint-50 to-sky-50/50 text-mint-700{% endif %}"
+               data-tooltip="{% trans 'Knowledge Base' %}">
+                <div class="w-10 h-10 rounded-xl {% if 'knowledge' in request.path %}bg-gradient-to-br from-mint-500 to-sky-500 shadow-glow-mint{% else %}bg-gradient-to-br from-surface-100 to-surface-200{% endif %} flex items-center justify-center flex-shrink-0 transition-all icon-box">
+                    <span class="text-lg">📚</span>
+                </div>
+                <span class="sidebar-text ml-3 font-semibold overflow-hidden whitespace-nowrap">{% trans "Knowledge Base" %}</span>
+                <span class="nav-tooltip">{% trans "Knowledge Base" %}</span>
             </a>
 
-            <a href="{% url 'dashboard:settings' %}"
-               class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors {% if request.resolver_match.url_name == 'settings' %}bg-gray-800 text-white border-r-4 border-primary-500{% endif %}">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                {% trans "Settings" %}
+            <a href="{% url 'dashboard:analytics' %}"
+               class="nav-item group relative flex items-center px-3 py-3 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-sky-50 hover:to-lavender-50/50 transition-all duration-200 {% if request.resolver_match.url_name == 'analytics' %}active bg-gradient-to-r from-sky-50 to-lavender-50/50 text-sky-700{% endif %}"
+               data-tooltip="{% trans 'Analytics' %}">
+                <div class="w-10 h-10 rounded-xl {% if request.resolver_match.url_name == 'analytics' %}bg-gradient-to-br from-sky-500 to-lavender-500 shadow-glow-sky{% else %}bg-gradient-to-br from-surface-100 to-surface-200{% endif %} flex items-center justify-center flex-shrink-0 transition-all icon-box">
+                    <span class="text-lg">📊</span>
+                </div>
+                <span class="sidebar-text ml-3 font-semibold overflow-hidden whitespace-nowrap">{% trans "Analytics" %}</span>
+                <span class="nav-tooltip">{% trans "Analytics" %}</span>
             </a>
+
+            <div class="pt-4 mt-4 border-t border-surface-200">
+                <a href="{% url 'dashboard:settings' %}"
+                   class="nav-item group relative flex items-center px-3 py-3 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-lavender-50 hover:to-primary-50/50 transition-all duration-200 {% if request.resolver_match.url_name == 'settings' %}active bg-gradient-to-r from-lavender-50 to-primary-50/50 text-lavender-700{% endif %}"
+                   data-tooltip="{% trans 'Settings' %}">
+                    <div class="w-10 h-10 rounded-xl {% if request.resolver_match.url_name == 'settings' %}bg-gradient-to-br from-lavender-500 to-primary-500{% else %}bg-gradient-to-br from-surface-100 to-surface-200{% endif %} flex items-center justify-center flex-shrink-0 transition-all icon-box">
+                        <span class="text-lg">⚙️</span>
+                    </div>
+                    <span class="sidebar-text ml-3 font-semibold overflow-hidden whitespace-nowrap">{% trans "Settings" %}</span>
+                    <span class="nav-tooltip">{% trans "Settings" %}</span>
+                </a>
+            </div>
         </nav>
 
         <!-- Language Switcher -->
-        <div class="px-4 py-3 border-t border-gray-800">
-            <form action="{% url 'set_language' %}" method="post" class="flex items-center space-x-2">
+        <div class="px-3 py-3 border-t border-surface-100">
+            <form action="{% url 'set_language' %}" method="post" class="flex items-center">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ request.path }}">
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
-                </svg>
+                <div class="w-9 h-9 rounded-lg bg-surface-100 flex items-center justify-center flex-shrink-0 group relative" data-tooltip="{% trans 'Language' %}">
+                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                    </svg>
+                    <span class="nav-tooltip">{% trans "Language" %}</span>
+                </div>
                 <select name="language"
                         onchange="this.form.submit()"
-                        class="bg-gray-800 text-gray-300 text-sm rounded border-gray-700 focus:ring-primary-500 focus:border-primary-500 py-1 px-2">
+                        class="sidebar-text ml-3 flex-1 bg-surface-50 text-gray-700 text-sm rounded-lg border border-surface-200 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 py-2 px-3 transition-all input-animated overflow-hidden">
                     {% get_current_language as LANGUAGE_CODE %}
                     {% get_available_languages as LANGUAGES %}
                     {% for lang_code, lang_name in LANGUAGES %}
@@ -83,41 +125,188 @@
         </div>
 
         <!-- User Info -->
-        <div class="p-4 border-t border-gray-800">
+        <div class="p-3 border-t border-surface-100 bg-gradient-to-r from-primary-50/30 to-accent-50/30">
             <div class="flex items-center">
-                <div class="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
-                    <span class="text-white font-medium">{{ request.user.email.0|upper }}</span>
+                <div class="w-11 h-11 bg-gradient-to-br from-primary-500 via-accent-500 to-coral-500 rounded-2xl flex items-center justify-center shadow-playful flex-shrink-0 group relative icon-box" data-tooltip="{{ request.user.company_name|default:request.user.email }}">
+                    <span class="text-white font-bold text-lg">{{ request.user.email.0|upper }}</span>
+                    <span class="nav-tooltip">{{ request.user.company_name|default:request.user.email }}</span>
                 </div>
-                <div class="ml-3 flex-1">
-                    <p class="text-sm font-medium text-white truncate">{{ request.user.company_name|default:request.user.email }}</p>
-                    <p class="text-xs text-gray-400 capitalize">{{ request.user.plan }} {% trans "Plan" %}</p>
+                <div class="sidebar-text ml-3 flex-1 min-w-0 overflow-hidden">
+                    <p class="text-sm font-bold text-gray-900 truncate">{{ request.user.company_name|default:request.user.email }}</p>
+                    <div class="flex items-center mt-1">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-sm">
+                            <span class="mr-1">✨</span> {{ request.user.plan|title }} {% trans "Plan" %}
+                        </span>
+                    </div>
                 </div>
-                <a href="{% url 'logout' %}" class="text-gray-400 hover:text-white" title="{% trans 'Logout' %}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                    </svg>
+                <a href="{% url 'logout' %}"
+                   class="sidebar-text w-10 h-10 rounded-xl bg-surface-100 hover:bg-gradient-to-br hover:from-red-500 hover:to-coral-500 flex items-center justify-center text-gray-400 hover:text-white transition-all btn-press flex-shrink-0"
+                   title="{% trans 'Logout' %}">
+                    <span class="text-lg">👋</span>
                 </a>
             </div>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto">
+    <main class="flex-1 overflow-y-auto bg-gradient-to-br from-surface-50 via-white to-primary-50/20">
+        <!-- Decorative Blobs (Background) -->
+        <div class="fixed top-0 right-0 w-96 h-96 blob blob-purple opacity-20 -z-10"></div>
+        <div class="fixed bottom-0 left-1/4 w-80 h-80 blob blob-pink opacity-15 -z-10"></div>
+        <div class="fixed top-1/2 right-1/4 w-64 h-64 blob blob-coral opacity-10 -z-10"></div>
+
         <!-- Top Header -->
-        <header class="bg-white shadow-sm px-8 py-4">
+        <header class="bg-white/70 glass sticky top-0 z-10 border-b border-surface-100/50 px-8 py-5">
             <div class="flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-800">{% block page_title %}{% trans "Dashboard" %}{% endblock %}</h2>
-                <div class="flex items-center space-x-4">
+                <div>
+                    <h2 class="text-2xl font-extrabold gradient-text">{% block page_title %}{% trans "Dashboard" %}{% endblock %}</h2>
+                    <p class="text-sm text-gray-500 mt-1 font-medium">{% block page_subtitle %}{% endblock %}</p>
+                </div>
+                <div class="flex items-center space-x-3">
                     {% block header_actions %}{% endblock %}
                 </div>
             </div>
         </header>
 
         <!-- Page Content -->
-        <div class="p-8">
+        <div class="p-8 page-transition">
             {% block content %}{% endblock %}
         </div>
     </main>
 </div>
+
+<style>
+    /* Sidebar States */
+    .sidebar-collapsed {
+        width: 72px;
+    }
+    .sidebar-expanded {
+        width: 280px;
+    }
+    .sidebar-pinned {
+        width: 280px;
+    }
+
+    /* Text visibility */
+    .sidebar-collapsed .sidebar-text {
+        opacity: 0;
+        width: 0;
+        transition: opacity 0.2s ease, width 0.2s ease;
+    }
+    .sidebar-expanded .sidebar-text,
+    .sidebar-pinned .sidebar-text {
+        opacity: 1;
+        width: auto;
+        transition: opacity 0.2s ease 0.1s, width 0.2s ease;
+    }
+
+    /* Tooltip styling */
+    .nav-tooltip {
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #1f2937;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
+        margin-left: 12px;
+        z-index: 100;
+        pointer-events: none;
+    }
+    .nav-tooltip::before {
+        content: '';
+        position: absolute;
+        left: -6px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 6px solid transparent;
+        border-right-color: #1f2937;
+        border-left: none;
+    }
+
+    /* Show tooltips only when collapsed */
+    .sidebar-collapsed .group:hover .nav-tooltip,
+    .sidebar-collapsed .nav-item:hover .nav-tooltip {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Pin icon rotation */
+    .sidebar-pinned #pin-icon {
+        transform: rotate(180deg);
+    }
+</style>
+
+<script>
+    // Sidebar state management
+    let sidebarPinned = localStorage.getItem('sidebarPinned') === 'true';
+    const sidebar = document.getElementById('sidebar');
+    const pinIcon = document.getElementById('pin-icon');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+
+    // Initialize sidebar state on page load
+    function initSidebar() {
+        if (sidebarPinned) {
+            sidebar.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('sidebar-pinned');
+            updatePinButton(true);
+        }
+    }
+
+    // Expand sidebar on hover (only if not pinned)
+    function expandSidebar() {
+        if (!sidebarPinned) {
+            sidebar.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('sidebar-expanded');
+        }
+    }
+
+    // Collapse sidebar on mouse leave (only if not pinned)
+    function collapseSidebar() {
+        if (!sidebarPinned) {
+            sidebar.classList.remove('sidebar-expanded');
+            sidebar.classList.add('sidebar-collapsed');
+        }
+    }
+
+    // Toggle pin state
+    function toggleSidebarPin() {
+        sidebarPinned = !sidebarPinned;
+        localStorage.setItem('sidebarPinned', sidebarPinned);
+
+        if (sidebarPinned) {
+            sidebar.classList.remove('sidebar-collapsed', 'sidebar-expanded');
+            sidebar.classList.add('sidebar-pinned');
+        } else {
+            sidebar.classList.remove('sidebar-pinned');
+            sidebar.classList.add('sidebar-collapsed');
+        }
+
+        updatePinButton(sidebarPinned);
+    }
+
+    // Update pin button appearance
+    function updatePinButton(isPinned) {
+        const pinText = toggleBtn.querySelector('.sidebar-text');
+        if (isPinned) {
+            pinIcon.style.transform = 'rotate(180deg)';
+            pinText.textContent = '{% trans "Unpin sidebar" %}';
+            toggleBtn.title = '{% trans "Unpin sidebar" %}';
+        } else {
+            pinIcon.style.transform = 'rotate(0deg)';
+            pinText.textContent = '{% trans "Pin sidebar" %}';
+            toggleBtn.title = '{% trans "Pin sidebar" %}';
+        }
+    }
+
+    // Initialize on DOM load
+    document.addEventListener('DOMContentLoaded', initSidebar);
+</script>
 {% endblock %}
