@@ -1,9 +1,14 @@
-from django.shortcuts import render
+import json
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db.models import Count, Q
+from django.utils.translation import gettext_lazy as _
 from conversations.models import Conversation, Message
 from replies.models import PredefinedReply
 from knowledge.models import Document
+from analytics.services import AnalyticsService, DateRange
+from accounts.forms import UserSettingsForm
 
 
 @login_required
@@ -86,5 +91,74 @@ def conversations_list(request):
 def settings_page(request):
     """
     User settings page.
+    Handles viewing and updating account settings.
     """
-    return render(request, 'dashboard/settings.html')
+    if request.method == 'POST':
+        form = UserSettingsForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Settings saved successfully!'))
+            return redirect('dashboard:settings')
+        else:
+            messages.error(request, _('Please correct the errors below.'))
+    else:
+        form = UserSettingsForm(instance=request.user)
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'dashboard/settings.html', context)
+
+
+@login_required
+def analytics_page(request):
+    """
+    Analytics dashboard page.
+
+    Displays charts and metrics using Chart.js with data from the analytics service.
+    """
+    # Get date range from query params (default 30 days)
+    days = request.GET.get('days', '30')
+    try:
+        days = int(days)
+    except ValueError:
+        days = 30
+
+    # Cap at reasonable limits
+    days = max(1, min(days, 365))
+
+    date_range = DateRange.last_n_days(days)
+    service = AnalyticsService(request.user, date_range)
+
+    # Get all analytics data
+    overview = service.get_overview_stats()
+    message_trend = service.get_message_volume_trend()
+    conversation_trend = service.get_conversation_trend()
+    response_time_trend = service.get_response_time_trend()
+    platform_breakdown = service.get_platform_breakdown()
+    response_types = service.get_response_type_distribution()
+    status_distribution = service.get_conversation_status_distribution()
+    ai_confidence = service.get_ai_confidence_distribution()
+    top_replies = service.get_top_predefined_replies()
+    busiest_hours = service.get_busiest_hours()
+    usage = service.get_usage_stats()
+    knowledge_base = service.get_knowledge_base_stats()
+
+    context = {
+        'days': days,
+        'overview': overview,
+        'usage': usage,
+        'knowledge_base': knowledge_base,
+        'top_replies': top_replies,
+        # JSON data for charts
+        'message_trend_json': json.dumps(message_trend),
+        'conversation_trend_json': json.dumps(conversation_trend),
+        'response_time_trend_json': json.dumps(response_time_trend),
+        'platform_breakdown_json': json.dumps(platform_breakdown),
+        'response_types_json': json.dumps(response_types),
+        'status_distribution_json': json.dumps(status_distribution),
+        'ai_confidence_json': json.dumps(ai_confidence),
+        'busiest_hours_json': json.dumps(busiest_hours),
+    }
+
+    return render(request, 'dashboard/analytics.html', context)

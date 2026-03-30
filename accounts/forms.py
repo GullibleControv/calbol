@@ -1,6 +1,36 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.utils.translation import gettext_lazy as _
 from .models import User
+
+
+class UserSettingsForm(forms.ModelForm):
+    """
+    Form for updating user account settings.
+    Allows users to update their company name and phone number.
+    """
+    company_name = forms.CharField(
+        label=_('Company Name'),
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-4 py-3 border-2 border-surface-200 rounded-2xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all input-animated',
+            'placeholder': _('Your company name'),
+        })
+    )
+    phone = forms.CharField(
+        label=_('Phone Number'),
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-4 py-3 border-2 border-surface-200 rounded-2xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all input-animated',
+            'placeholder': _('+1 234 567 8900'),
+        })
+    )
+
+    class Meta:
+        model = User
+        fields = ['company_name', 'phone']
 
 
 class LoginForm(AuthenticationForm):
