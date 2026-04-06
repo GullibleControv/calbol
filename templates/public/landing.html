@@ -1,0 +1,540 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}CalBol — Auto-Reply Assistant for Busy Professionals{% endblock %}
+
+{% block body %}
+<!-- ========== HERO SECTION ========== -->
+<div class="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 relative overflow-hidden">
+
+    <!-- Background Blobs -->
+    <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-gradient-to-br from-primary-300/25 to-accent-300/15 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/3 right-0 w-[400px] h-[400px] bg-gradient-to-br from-coral-300/20 to-lemon-300/10 rounded-full translate-x-1/3 blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 left-1/4 w-[300px] h-[300px] bg-gradient-to-br from-mint-300/20 to-sky-300/15 rounded-full translate-y-1/2 blur-3xl pointer-events-none"></div>
+
+    <!-- Floating Emojis -->
+    <div class="absolute top-20 left-16 text-5xl opacity-15 animate-float select-none" style="animation-delay:0.3s">💬</div>
+    <div class="absolute top-40 right-20 text-4xl opacity-15 animate-float select-none" style="animation-delay:1.2s">🤖</div>
+    <div class="absolute top-1/2 left-8 text-3xl opacity-15 animate-float select-none" style="animation-delay:2.1s">✨</div>
+    <div class="absolute bottom-40 right-12 text-4xl opacity-15 animate-float select-none" style="animation-delay:0.8s">📱</div>
+    <div class="absolute bottom-20 left-1/3 text-3xl opacity-15 animate-float select-none" style="animation-delay:1.7s">💫</div>
+    <div class="absolute top-28 left-1/2 text-2xl opacity-10 animate-float select-none" style="animation-delay:3s">⚡</div>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="relative z-20 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+        <!-- Logo -->
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-primary-500 via-accent-500 to-coral-500 rounded-2xl flex items-center justify-center shadow-playful">
+                <span class="text-xl">💬</span>
+            </div>
+            <span class="text-2xl font-extrabold gradient-text">CalBol</span>
+        </div>
+
+        <!-- Nav Links -->
+        <div class="hidden md:flex items-center space-x-8">
+            <a href="#features" class="text-gray-600 hover:text-primary-600 font-medium transition-colors">{% trans "Features" %}</a>
+            <a href="#how-it-works" class="text-gray-600 hover:text-primary-600 font-medium transition-colors">{% trans "How it works" %}</a>
+            <a href="#pricing" class="text-gray-600 hover:text-primary-600 font-medium transition-colors">{% trans "Pricing" %}</a>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="flex items-center space-x-3">
+            <!-- Language Switcher -->
+            <form action="{% url 'set_language' %}" method="post" class="hidden sm:block">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <select name="language" onchange="this.form.submit()"
+                        class="bg-white/80 backdrop-blur-sm text-gray-600 text-sm rounded-full border-0 shadow-soft focus:ring-2 focus:ring-primary-500 py-1.5 px-3 font-medium">
+                    {% get_current_language as LANGUAGE_CODE %}
+                    {% get_available_languages as LANGUAGES %}
+                    {% for lang_code, lang_name in LANGUAGES %}
+                        <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_name }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard:home' %}"
+               class="bg-gradient-to-r from-primary-600 to-accent-600 text-white font-semibold py-2 px-5 rounded-full shadow-playful hover:shadow-playful-lg transition-all hover:-translate-y-0.5">
+                {% trans "Dashboard" %} →
+            </a>
+            {% else %}
+            <a href="{% url 'accounts:login' %}"
+               class="text-gray-700 hover:text-primary-600 font-medium transition-colors">{% trans "Sign in" %}</a>
+            <a href="{% url 'accounts:register' %}"
+               class="bg-gradient-to-r from-primary-600 to-accent-600 text-white font-semibold py-2 px-5 rounded-full shadow-playful hover:shadow-playful-lg transition-all hover:-translate-y-0.5">
+                {% trans "Get started free" %}
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- ===== HERO CONTENT ===== -->
+    <div class="relative z-10 max-w-6xl mx-auto px-6 pt-16 pb-32 text-center">
+        <!-- Badge -->
+        <div class="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-primary-200 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full shadow-soft mb-8 animate-pop">
+            <span class="w-2 h-2 bg-mint-500 rounded-full animate-pulse"></span>
+            <span>✨ {% trans "AI-powered customer messaging" %}</span>
+        </div>
+
+        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight mb-6 animate-fade-in">
+            {% trans "Reply smarter." %}<br>
+            <span class="gradient-text">{% trans "Not harder." %}</span>
+        </h1>
+
+        <p class="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed animate-slide-up" style="animation-delay:0.2s">
+            {% trans "CalBol auto-replies to your WhatsApp and email messages using your own knowledge base — so you can focus on what matters." %}
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-slide-up" style="animation-delay:0.4s">
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard:home' %}"
+               class="bg-gradient-to-r from-primary-600 via-accent-600 to-coral-500 text-white text-lg font-bold py-4 px-10 rounded-2xl shadow-playful-lg hover:shadow-playful transition-all hover:-translate-y-1 hover:scale-105">
+                {% trans "Go to Dashboard" %} 🚀
+            </a>
+            {% else %}
+            <a href="{% url 'accounts:register' %}"
+               class="bg-gradient-to-r from-primary-600 via-accent-600 to-coral-500 text-white text-lg font-bold py-4 px-10 rounded-2xl shadow-playful-lg hover:shadow-playful transition-all hover:-translate-y-1 hover:scale-105">
+                {% trans "Start for free" %} 🚀
+            </a>
+            <a href="#how-it-works"
+               class="bg-white/80 backdrop-blur-sm text-gray-700 text-lg font-semibold py-4 px-10 rounded-2xl shadow-soft hover:shadow-playful transition-all hover:-translate-y-0.5 border border-gray-200">
+                {% trans "See how it works" %} ↓
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Social Proof Numbers -->
+        <div class="grid grid-cols-3 gap-6 max-w-lg mx-auto animate-slide-up" style="animation-delay:0.6s">
+            <div class="text-center">
+                <div class="text-3xl font-extrabold gradient-text">50+</div>
+                <div class="text-sm text-gray-500 font-medium mt-1">{% trans "Replies / day" %}</div>
+            </div>
+            <div class="text-center border-x border-gray-200">
+                <div class="text-3xl font-extrabold gradient-text">2</div>
+                <div class="text-sm text-gray-500 font-medium mt-1">{% trans "Platforms" %}</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-extrabold gradient-text">∞</div>
+                <div class="text-sm text-gray-500 font-medium mt-1">{% trans "Knowledge docs" %}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== PLATFORM LOGOS ========== -->
+<div class="bg-white py-12 border-y border-gray-100">
+    <div class="max-w-4xl mx-auto px-6">
+        <p class="text-center text-gray-400 text-sm font-semibold uppercase tracking-widest mb-8">{% trans "Works with your existing tools" %}</p>
+        <div class="flex flex-wrap items-center justify-center gap-10">
+            <div class="flex items-center space-x-2 text-gray-500">
+                <span class="text-3xl">📱</span>
+                <span class="text-xl font-bold">WhatsApp</span>
+            </div>
+            <div class="flex items-center space-x-2 text-gray-500">
+                <span class="text-3xl">📧</span>
+                <span class="text-xl font-bold">Email</span>
+            </div>
+            <div class="flex items-center space-x-2 text-gray-500">
+                <span class="text-3xl">📄</span>
+                <span class="text-xl font-bold">PDF / DOCX</span>
+            </div>
+            <div class="flex items-center space-x-2 text-gray-500">
+                <span class="text-3xl">🤖</span>
+                <span class="text-xl font-bold">OpenAI</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== HOW IT WORKS ========== -->
+<div id="how-it-works" class="bg-gradient-to-b from-white to-primary-50 py-24">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <div class="inline-block bg-primary-100 text-primary-700 text-sm font-bold px-4 py-2 rounded-full mb-4">{% trans "How it works" %}</div>
+            <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">
+                {% trans "Set up in" %} <span class="gradient-text">{% trans "3 steps" %}</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">{% trans "No coding required. Connect, upload, and let CalBol handle the rest." %}</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Step 1 -->
+            <div class="relative">
+                <div class="bg-white rounded-3xl p-8 shadow-playful border border-gray-100 h-full hover:shadow-playful-lg transition-all hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-gradient-to-br from-primary-500 to-accent-500 rounded-2xl flex items-center justify-center shadow-glow mb-6">
+                        <span class="text-2xl">🔗</span>
+                    </div>
+                    <div class="text-5xl font-extrabold text-primary-100 mb-3">01</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">{% trans "Connect your platforms" %}</h3>
+                    <p class="text-gray-600 leading-relaxed">{% trans "Link your WhatsApp Business account and email inbox. CalBol listens for incoming messages in real time via webhooks." %}</p>
+                </div>
+                <!-- Connector Arrow -->
+                <div class="hidden md:block absolute top-1/2 -right-4 text-2xl text-primary-300 z-10">→</div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="relative">
+                <div class="bg-white rounded-3xl p-8 shadow-playful border border-gray-100 h-full hover:shadow-playful-lg transition-all hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-gradient-to-br from-accent-500 to-coral-500 rounded-2xl flex items-center justify-center shadow-glow mb-6">
+                        <span class="text-2xl">📚</span>
+                    </div>
+                    <div class="text-5xl font-extrabold text-accent-100 mb-3">02</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">{% trans "Upload your knowledge" %}</h3>
+                    <p class="text-gray-600 leading-relaxed">{% trans "Upload PDFs, Word documents, or plain text files. CalBol chunks and embeds your content so AI can find the right answer instantly." %}</p>
+                </div>
+                <div class="hidden md:block absolute top-1/2 -right-4 text-2xl text-accent-300 z-10">→</div>
+            </div>
+
+            <!-- Step 3 -->
+            <div>
+                <div class="bg-white rounded-3xl p-8 shadow-playful border border-gray-100 h-full hover:shadow-playful-lg transition-all hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-gradient-to-br from-coral-500 to-mint-500 rounded-2xl flex items-center justify-center shadow-glow mb-6">
+                        <span class="text-2xl">⚡</span>
+                    </div>
+                    <div class="text-5xl font-extrabold text-coral-100 mb-3">03</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">{% trans "Auto-reply, automatically" %}</h3>
+                    <p class="text-gray-600 leading-relaxed">{% trans "CalBol generates accurate, on-brand replies using your knowledge base. Low-confidence answers get flagged for your review." %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== FEATURES SECTION ========== -->
+<div id="features" class="bg-white py-24">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <div class="inline-block bg-accent-100 text-accent-700 text-sm font-bold px-4 py-2 rounded-full mb-4">{% trans "Features" %}</div>
+            <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">
+                {% trans "Everything you need to" %} <span class="gradient-text">{% trans "automate replies" %}</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">{% trans "Built for professionals who receive lots of repetitive questions — freelancers, small businesses, solo founders." %}</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Feature: AI Replies -->
+            <div class="bg-gradient-to-br from-primary-50 to-white rounded-3xl p-7 border border-primary-100 hover:shadow-playful transition-all hover:-translate-y-0.5">
+                <div class="text-3xl mb-4">🤖</div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">{% trans "AI-Powered Responses" %}</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">{% trans "Uses RAG (Retrieval-Augmented Generation) to find answers from your documents and craft accurate, natural replies." %}</p>
+            </div>
+
+            <!-- Feature: Knowledge Base -->
+            <div class="bg-gradient-to-br from-accent-50 to-white rounded-3xl p-7 border border-accent-100 hover:shadow-playful transition-all hover:-translate-y-0.5">
+                <div class="text-3xl mb-4">📂</div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">{% trans "Knowledge Base Upload" %}</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">{% trans "Upload PDFs, DOCX, or TXT files. CalBol automatically processes, chunks, and indexes them for semantic search." %}</p>
+            </div>
+
+            <!-- Feature: Predefined Replies -->
+            <div class="bg-gradient-to-br from-coral-50 to-white rounded-3xl p-7 border border-coral-100 hover:shadow-playful transition-all hover:-translate-y-0.5">
+                <div class="text-3xl mb-4">⚡</div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">{% trans "Predefined Reply Templates" %}</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">{% trans "Set keyword-triggered instant replies for your FAQs. No AI needed — fast, deterministic, always right." %}</p>
+            </div>
+
+            <!-- Feature: Multi-platform -->
+            <div class="bg-gradient-to-br from-mint-50 to-white rounded-3xl p-7 border border-mint-100 hover:shadow-playful transition-all hover:-translate-y-0.5">
+                <div class="text-3xl mb-4">📱</div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">{% trans "WhatsApp + Email" %}</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">{% trans "One platform for all your inbound messages. Connect multiple WhatsApp numbers and email addresses." %}</p>
+            </div>
+
+            <!-- Feature: Human Review -->
+            <div class="bg-gradient-to-br from-sky-50 to-white rounded-3xl p-7 border border-sky-100 hover:shadow-playful transition-all hover:-translate-y-0.5">
+                <div class="text-3xl mb-4">👁️</div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">{% trans "Smart Human Escalation" %}</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">{% trans "Low-confidence answers are automatically flagged for your review. You stay in control while AI handles the volume." %}</p>
+            </div>
+
+            <!-- Feature: Analytics -->
+            <div class="bg-gradient-to-br from-lavender-50 to-white rounded-3xl p-7 border border-lavender-100 hover:shadow-playful transition-all hover:-translate-y-0.5">
+                <div class="text-3xl mb-4">📊</div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">{% trans "Analytics Dashboard" %}</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">{% trans "Track reply volume, AI confidence scores, escalation rates, and platform performance — all in one place." %}</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ========== DEMO WIDGET ========== -->
+<div class="bg-gradient-to-br from-primary-600 via-accent-600 to-coral-500 py-24 relative overflow-hidden">
+    <!-- Background pattern -->
+    <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size:40px 40px;"></div>
+    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl"></div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-6">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <!-- Left: Copy -->
+            <div class="text-white">
+                <div class="inline-block bg-white/20 text-white text-sm font-bold px-4 py-2 rounded-full mb-6">{% trans "Live Demo" %}</div>
+                <h2 class="text-4xl font-extrabold mb-6">{% trans "See CalBol answer a question — right now" %}</h2>
+                <p class="text-white/80 text-lg leading-relaxed mb-8">{% trans "Type a question below and CalBol will search its knowledge base and respond. This is exactly what your customers would experience." %}</p>
+                <ul class="space-y-3 text-white/90">
+                    <li class="flex items-center space-x-3">
+                        <span class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-sm">✓</span>
+                        <span>{% trans "No account needed to try" %}</span>
+                    </li>
+                    <li class="flex items-center space-x-3">
+                        <span class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-sm">✓</span>
+                        <span>{% trans "Powered by real RAG pipeline" %}</span>
+                    </li>
+                    <li class="flex items-center space-x-3">
+                        <span class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-sm">✓</span>
+                        <span>{% trans "Confidence score shown live" %}</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Right: Chat Widget -->
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+                <!-- Chat Header -->
+                <div class="bg-gradient-to-r from-primary-500 to-accent-500 px-6 py-4 flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                        <span class="text-xl">🤖</span>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold">CalBol AI</div>
+                        <div class="text-white/70 text-xs flex items-center space-x-1">
+                            <span class="w-2 h-2 bg-mint-400 rounded-full"></span>
+                            <span>{% trans "Online" %}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="p-6 h-72 overflow-y-auto space-y-4 bg-gray-50" id="chat-messages">
+                    <!-- Bot welcome message -->
+                    <div class="flex items-start space-x-2">
+                        <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center text-sm flex-shrink-0">🤖</div>
+                        <div class="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-soft max-w-xs">
+                            <p class="text-sm text-gray-700">{% trans "Hello! I'm CalBol. Ask me anything — I'll search the knowledge base and reply with the best answer I can find. 💬" %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="px-4 py-4 border-t border-gray-100 bg-white">
+                    <div class="flex items-center space-x-3">
+                        <input type="text" id="demo-input" placeholder="{% trans 'Ask a question...' %}"
+                               class="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-400 text-gray-700"
+                               onkeydown="if(event.key==='Enter') sendDemoMessage()">
+                        <button onclick="sendDemoMessage()"
+                                class="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-full flex items-center justify-center text-white shadow-playful hover:shadow-playful-lg transition-all hover:scale-105">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-400 text-center mt-2">{% trans "Demo only — no real knowledge base connected" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== PRICING ========== -->
+<div id="pricing" class="bg-gradient-to-b from-white to-primary-50 py-24">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <div class="inline-block bg-mint-100 text-mint-700 text-sm font-bold px-4 py-2 rounded-full mb-4">{% trans "Pricing" %}</div>
+            <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">
+                {% trans "Simple," %} <span class="gradient-text">{% trans "transparent pricing" %}</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-xl mx-auto">{% trans "Start free. Upgrade when you're ready. No credit card required." %}</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+
+            <!-- Free Plan -->
+            <div class="bg-white rounded-3xl p-8 border border-gray-200 shadow-soft hover:shadow-playful transition-all hover:-translate-y-1">
+                <div class="text-3xl mb-4">🌱</div>
+                <h3 class="text-xl font-bold text-gray-900 mb-1">{% trans "Free" %}</h3>
+                <div class="text-4xl font-extrabold text-gray-900 my-4">¥0<span class="text-lg font-medium text-gray-500">/ {% trans "mo" %}</span></div>
+                <p class="text-gray-500 text-sm mb-6">{% trans "Perfect for trying CalBol out" %}</p>
+                <ul class="space-y-3 text-sm text-gray-700 mb-8">
+                    <li class="flex items-center space-x-2"><span class="text-mint-500">✓</span><span>{% trans "50 auto-replies / month" %}</span></li>
+                    <li class="flex items-center space-x-2"><span class="text-mint-500">✓</span><span>{% trans "1 platform connection" %}</span></li>
+                    <li class="flex items-center space-x-2"><span class="text-mint-500">✓</span><span>{% trans "3 knowledge documents" %}</span></li>
+                    <li class="flex items-center space-x-2"><span class="text-gray-300">✗</span><span class="text-gray-400">{% trans "Analytics" %}</span></li>
+                </ul>
+                <a href="{% url 'accounts:register' %}"
+                   class="block text-center bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-xl hover:bg-gray-200 transition-colors">
+                    {% trans "Get started free" %}
+                </a>
+            </div>
+
+            <!-- Starter Plan (Highlighted) -->
+            <div class="bg-gradient-to-br from-primary-600 to-accent-600 rounded-3xl p-8 shadow-playful-lg text-white transform hover:-translate-y-2 transition-all relative">
+                <div class="absolute top-4 right-4 bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full">{% trans "Popular" %} 🔥</div>
+                <div class="text-3xl mb-4">🚀</div>
+                <h3 class="text-xl font-bold mb-1">{% trans "Starter" %}</h3>
+                <div class="text-4xl font-extrabold my-4">¥2,980<span class="text-lg font-medium text-white/70">/ {% trans "mo" %}</span></div>
+                <p class="text-white/70 text-sm mb-6">{% trans "For freelancers & small businesses" %}</p>
+                <ul class="space-y-3 text-sm mb-8">
+                    <li class="flex items-center space-x-2"><span class="text-mint-300">✓</span><span>{% trans "1,000 auto-replies / month" %}</span></li>
+                    <li class="flex items-center space-x-2"><span class="text-mint-300">✓</span><span>{% trans "5 platform connections" %}</span></li>
+                    <li class="flex items-center space-x-2"><span class="text-mint-300">✓</span><span>{% trans "Unlimited knowledge documents" %}</span></li>
+                    <li class="flex items-center space-x-2"><span class="text-mint-300">✓</span><span>{% trans "Analytics dashboard" %}</span></li>
+                </ul>
+                <a href="{% url 'accounts:register' %}"
+                   class="block text-center bg-white text-primary-700 font-bold py-3 px-6 rounded-xl hover:bg-primary-50 transition-colors shadow-soft">
+                    {% trans "Start free trial" %}
+                </a>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="bg-white rounded-3xl p-8 border border-gray-200 shadow-soft hover:shadow-playful transition-all hover:-translate-y-1">
+                <div class="text-3xl mb-4">💎</div>
+                <h3 class="text-xl font-bold text-gray-900 mb-1">{% trans "Pro" %}</h3>
+                <div class="text-4xl font-extrabold text-gray-900 my-4">¥9,800<span class="text-lg font-medium text-gray-500">/ {% trans "mo" %}</span></div>
+                <p class="text-gray-500 text-sm mb-6">{% trans "For growing teams and agencies" %}</p>
+                <ul class="space-y-3 text-sm text-gray-700 mb-8">
+                    <li class="flex items-center space-x-2"><span class="text-mint-500">✓</span><span>{% trans "Unlimited auto-replies" %}</span></li>
+                    <li class="flex items-center space-x-2"><span class="text-mint-500">✓</span><span>{% trans "Unlimited platforms" %}</span></li>
+                    <li class="flex items-center space-x-2"><span class="text-mint-500">✓</span><span>{% trans "Unlimited knowledge documents" %}</span></li>
+                    <li class="flex items-center space-x-2"><span class="text-mint-500">✓</span><span>{% trans "Priority support" %}</span></li>
+                </ul>
+                <a href="{% url 'accounts:register' %}"
+                   class="block text-center bg-gradient-to-r from-primary-600 to-accent-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-playful transition-all">
+                    {% trans "Get Pro" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== CTA SECTION ========== -->
+<div class="bg-white py-24">
+    <div class="max-w-3xl mx-auto px-6 text-center">
+        <div class="bg-gradient-to-br from-primary-50 via-accent-50 to-coral-50 rounded-3xl p-12 border border-primary-100 shadow-playful">
+            <div class="text-6xl mb-6">🎉</div>
+            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">
+                {% trans "Ready to stop replying manually?" %}
+            </h2>
+            <p class="text-xl text-gray-600 mb-8">
+                {% trans "Join CalBol and let AI handle the repetitive replies — so you can focus on the conversations that matter." %}
+            </p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard:home' %}"
+               class="inline-block bg-gradient-to-r from-primary-600 via-accent-600 to-coral-500 text-white text-lg font-bold py-4 px-12 rounded-2xl shadow-playful-lg hover:shadow-playful transition-all hover:-translate-y-1 hover:scale-105">
+                {% trans "Go to Dashboard" %} →
+            </a>
+            {% else %}
+            <a href="{% url 'accounts:register' %}"
+               class="inline-block bg-gradient-to-r from-primary-600 via-accent-600 to-coral-500 text-white text-lg font-bold py-4 px-12 rounded-2xl shadow-playful-lg hover:shadow-playful transition-all hover:-translate-y-1 hover:scale-105">
+                {% trans "Get started for free" %} 🚀
+            </a>
+            {% endif %}
+            <p class="text-gray-400 text-sm mt-4">{% trans "No credit card required · Set up in 5 minutes" %}</p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer class="bg-gray-900 text-gray-400 py-12">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center">
+                    <span class="text-sm">💬</span>
+                </div>
+                <span class="text-white font-bold text-xl">CalBol</span>
+            </div>
+            <div class="flex items-center space-x-6 text-sm">
+                <a href="{% url 'accounts:login' %}" class="hover:text-white transition-colors">{% trans "Sign in" %}</a>
+                <a href="{% url 'accounts:register' %}" class="hover:text-white transition-colors">{% trans "Sign up" %}</a>
+                <a href="#features" class="hover:text-white transition-colors">{% trans "Features" %}</a>
+                <a href="#pricing" class="hover:text-white transition-colors">{% trans "Pricing" %}</a>
+            </div>
+            <div class="text-sm">
+                © 2026 CalBol. {% trans "Built with" %} ❤️ {% trans "in Japan" %}
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ========== DEMO CHAT JS ========== -->
+{% block extra_js %}
+<script>
+const demoResponses = [
+    { text: "{% trans 'Based on the knowledge base, I found a relevant answer! Business hours are Monday to Saturday, 9AM–6PM JST. For urgent matters, please use the emergency contact listed in the FAQ document. 📋' %}", confidence: 0.87 },
+    { text: "{% trans 'Great question! According to the uploaded documents, shipping typically takes 3–5 business days for domestic orders and 7–14 days internationally. Free shipping applies to orders over ¥5,000. 📦' %}", confidence: 0.91 },
+    { text: "{% trans 'I found this in the knowledge base: refunds must be requested within 30 days of purchase. Please include your order number and reason. The team typically processes refunds within 5 business days. 💰' %}", confidence: 0.78 },
+    { text: "{% trans 'Hmm, I\'m not fully confident about this one — confidence: 42%. I\'d recommend a human review for an accurate answer. The question has been flagged for your team. 🚩' %}", confidence: 0.42 },
+    { text: "{% trans 'Found it! Product warranty covers manufacturing defects for 12 months. Physical damage and user error are not covered. Warranty claims can be submitted through the portal at support. 🛡️' %}", confidence: 0.85 },
+];
+
+let demoIndex = 0;
+
+function sendDemoMessage() {
+    const input = document.getElementById('demo-input');
+    const messages = document.getElementById('chat-messages');
+    const text = input.value.trim();
+    if (!text) return;
+
+    // User message
+    const userBubble = document.createElement('div');
+    userBubble.className = 'flex items-start space-x-2 justify-end';
+    userBubble.innerHTML = `
+        <div class="bg-gradient-to-br from-primary-500 to-accent-500 rounded-2xl rounded-tr-sm px-4 py-3 shadow-soft max-w-xs">
+            <p class="text-sm text-white">${escHtml(text)}</p>
+        </div>
+        <div class="w-8 h-8 bg-accent-100 rounded-full flex items-center justify-center text-sm flex-shrink-0">👤</div>
+    `;
+    messages.appendChild(userBubble);
+    input.value = '';
+    messages.scrollTop = messages.scrollHeight;
+
+    // Typing indicator
+    const typing = document.createElement('div');
+    typing.className = 'flex items-start space-x-2';
+    typing.id = 'typing-indicator';
+    typing.innerHTML = `
+        <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center text-sm flex-shrink-0">🤖</div>
+        <div class="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-soft">
+            <div class="flex space-x-1">
+                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0ms"></div>
+                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:150ms"></div>
+                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:300ms"></div>
+            </div>
+        </div>
+    `;
+    messages.appendChild(typing);
+    messages.scrollTop = messages.scrollHeight;
+
+    // Bot response after delay
+    setTimeout(() => {
+        document.getElementById('typing-indicator')?.remove();
+        const resp = demoResponses[demoIndex % demoResponses.length];
+        demoIndex++;
+        const confColor = resp.confidence >= 0.7 ? 'text-mint-600' : 'text-coral-500';
+        const botBubble = document.createElement('div');
+        botBubble.className = 'flex items-start space-x-2';
+        botBubble.innerHTML = `
+            <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center text-sm flex-shrink-0">🤖</div>
+            <div class="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-soft max-w-xs space-y-2">
+                <p class="text-sm text-gray-700">${escHtml(resp.text)}</p>
+                <div class="flex items-center space-x-1 text-xs ${confColor} font-medium">
+                    <span>{% trans "Confidence:" %} ${Math.round(resp.confidence * 100)}%</span>
+                </div>
+            </div>
+        `;
+        messages.appendChild(botBubble);
+        messages.scrollTop = messages.scrollHeight;
+    }, 1200);
+}
+
+function escHtml(text) {
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+}
+</script>
+{% endblock %}
+{% endblock %}

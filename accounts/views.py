@@ -6,6 +6,13 @@ from django.urls import reverse_lazy
 from .forms import LoginForm, RegisterForm
 
 
+def landing_page(request):
+    """Public landing page — shown at root URL instead of redirecting to login."""
+    if request.user.is_authenticated:
+        return redirect('dashboard:home')
+    return render(request, 'public/landing.html')
+
+
 class CustomLoginView(LoginView):
     """
     Login page for CalBol.
@@ -45,4 +52,4 @@ class RegisterView(CreateView):
 def logout_view(request):
     """Log out and redirect to home page."""
     logout(request)
-    return redirect('login')
+    return redirect('accounts:login')

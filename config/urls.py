@@ -5,8 +5,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.views.generic import RedirectView
 from django.conf.urls.i18n import i18n_patterns
+from accounts.views import landing_page
 
 # Non-internationalized URLs (API, etc.)
 urlpatterns = [
@@ -34,8 +34,8 @@ urlpatterns += i18n_patterns(
     # Knowledge Base
     path('knowledge/', include('knowledge.urls')),
 
-    # Redirect root to dashboard
-    path('', RedirectView.as_view(url='/dashboard/', permanent=False), name='home'),
+    # Public landing page
+    path('', landing_page, name='home'),
 
     # Don't add language prefix for default language (optional)
     prefix_default_language=True,
