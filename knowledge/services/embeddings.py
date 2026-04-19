@@ -5,6 +5,7 @@ Creates and manages vector embeddings for semantic search.
 """
 import logging
 import json
+import numpy as np
 from typing import List, Optional, Tuple
 from .ai_client import get_ai_client
 
@@ -78,7 +79,13 @@ class EmbeddingService:
         min_similarity: float = 0.3
     ) -> List[Tuple[dict, float]]:
         """
-        Find chunks most similar to a query.
+        Find chunks most similar to a query using numpy batch operations.
+
+        Vectorised approach:
+        1. Stack all valid chunk embeddings into a 2D matrix (n_chunks x 1536)
+        2. Compute all dot products in a single matrix multiply
+        3. Divide by norms to obtain cosine similarities
+        4. Use np.argsort to select top_k and filter by min_similarity
 
         Args:
             query: Search query text
@@ -95,8 +102,10 @@ class EmbeddingService:
             logger.warning("Could not create query embedding")
             return []
 
-        # Calculate similarities
-        results = []
+        # Parse and validate each chunk embedding; track which chunks are usable
+        valid_chunks = []
+        valid_embeddings = []
+
         for chunk in chunks:
             embedding = chunk.get('embedding')
             if not embedding:
@@ -109,15 +118,44 @@ class EmbeddingService:
                 except json.JSONDecodeError:
                     continue
 
-            similarity = self.cosine_similarity(query_embedding, embedding)
+            if not isinstance(embedding, list) or len(embedding) == 0:
+                continue
 
-            if similarity >= min_similarity:
-                results.append((chunk, similarity))
+            valid_chunks.append(chunk)
+            valid_embeddings.append(embedding)
 
-        # Sort by similarity (highest first)
-        results.sort(key=lambda x: x[1], reverse=True)
+        if not valid_embeddings:
+            return []
 
-        return results[:top_k]
+        # Build matrices for vectorised cosine similarity
+        # Shape: (n_chunks, embedding_dim)
+        embeddings_matrix = np.array(valid_embeddings, dtype=np.float64)
+        # Shape: (embedding_dim,)
+        query_vec = np.array(query_embedding, dtype=np.float64)
+
+        # Dot products: shape (n_chunks,)
+        dot_products = embeddings_matrix @ query_vec
+
+        # Norms
+        query_norm = np.linalg.norm(query_vec)
+        chunk_norms = np.linalg.norm(embeddings_matrix, axis=1)
+
+        # Avoid division by zero
+        denom = chunk_norms * query_norm
+        with np.errstate(invalid='ignore', divide='ignore'):
+            scores = np.where(denom > 0, dot_products / denom, 0.0)
+
+        # Filter by min_similarity threshold
+        above_threshold = np.where(scores >= min_similarity)[0]
+
+        if len(above_threshold) == 0:
+            return []
+
+        # Sort descending by score and take top_k
+        sorted_indices = above_threshold[np.argsort(scores[above_threshold])[::-1]]
+        top_indices = sorted_indices[:top_k]
+
+        return [(valid_chunks[i], float(scores[i])) for i in top_indices]
 
     def search_user_knowledge(
         self,

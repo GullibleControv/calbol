@@ -23,4 +23,10 @@ def process_document_on_upload(sender, instance, created, **kwargs):
         except Exception:
             # If Celery isn't running, process synchronously
             # (for development without Redis)
-            process_document(instance.id)
+            try:
+                process_document(instance.id)
+            except Exception as sync_error:
+                import logging
+                logging.getLogger(__name__).error(
+                    f"Sync document processing failed for {instance.id}: {sync_error}"
+                )

@@ -58,18 +58,49 @@ def process_document(self, document_id: int):
             [chunk for chunk in chunks]
         )
 
-        # Save chunks with embeddings
+        # Validate each embedding: must be a list of 1536 floats
+        valid_pairs = []
+        for i, (chunk_text, embedding) in enumerate(zip(chunks, embeddings)):
+            if (
+                embedding is None
+                or not isinstance(embedding, list)
+                or len(embedding) != 1536
+            ):
+                logger.warning(
+                    f"Document {document_id}: chunk {i} has invalid embedding "
+                    f"(type={type(embedding).__name__}, "
+                    f"len={len(embedding) if isinstance(embedding, list) else 'N/A'})"
+                )
+            else:
+                valid_pairs.append((i, chunk_text, embedding))
+
+        # If more than 50% of chunks failed, mark error and trigger retry
+        total = len(chunks)
+        success_count = len(valid_pairs)
+        failure_count = total - success_count
+
+        if total > 0 and failure_count / total > 0.5:
+            error_msg = (
+                f"Embedding failure rate too high: "
+                f"{failure_count}/{total} chunks failed"
+            )
+            logger.error(f"Document {document_id}: {error_msg}")
+            document.processing_error = error_msg
+            document.save()
+            raise ValueError(error_msg)
+
+        # Save only chunks with valid embeddings
         with transaction.atomic():
             # Delete existing chunks (in case of reprocessing)
             DocumentChunk.objects.filter(document=document).delete()
 
-            # Create new chunks
-            for i, (chunk_text, embedding) in enumerate(zip(chunks, embeddings)):
+            # Create new chunks (original index preserved as chunk_index)
+            for original_index, chunk_text, embedding in valid_pairs:
                 DocumentChunk.objects.create(
                     document=document,
                     content=chunk_text,
                     embedding=embedding,
-                    chunk_index=i
+                    chunk_index=original_index
                 )
 
             # Mark document as processed
@@ -79,7 +110,7 @@ def process_document(self, document_id: int):
 
         logger.info(
             f"Document {document.filename} processed: "
-            f"{len(chunks)} chunks created"
+            f"{success_count}/{total} chunks embedded successfully"
         )
 
     except Exception as e:
