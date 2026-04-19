@@ -102,7 +102,7 @@
                         {% trans "Remember me" %}
                     </label>
                 </div>
-                <a href="{% url 'password_reset' %}" class="text-sm text-primary-600 hover:text-accent-600 font-semibold transition-colors">
+                <a href="{% url 'accounts:password_reset' %}" class="text-sm text-primary-600 hover:text-accent-600 font-semibold transition-colors">
                     {% trans "Forgot password?" %}
                 </a>
             </div>
@@ -118,7 +118,7 @@
         <div class="text-center bg-white/60 glass rounded-2xl py-4 px-6 shadow-soft">
             <p class="text-gray-600 font-medium">
                 {% trans "Don't have an account?" %}
-                <a href="{% url 'register' %}" class="text-primary-600 hover:text-accent-600 font-bold ml-1 transition-colors">
+                <a href="{% url 'accounts:register' %}" class="text-primary-600 hover:text-accent-600 font-bold ml-1 transition-colors">
                     {% trans "Create one for free" %} <span class="emoji-hover">🎉</span>
                 </a>
             </p>

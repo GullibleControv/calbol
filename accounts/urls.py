@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
 from .views import CustomLoginView, RegisterView, logout_view
 
@@ -9,13 +9,14 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('logout/', logout_view, name='logout'),
 
-    # Password Reset URLs
+    # Password Reset URLs — use reverse_lazy so i18n_patterns resolves the
+    # correct language-prefixed URL at runtime instead of hardcoding /auth/…
     path('password-reset/',
          auth_views.PasswordResetView.as_view(
              template_name='auth/password_reset.html',
              email_template_name='auth/password_reset_email.html',
              subject_template_name='auth/password_reset_subject.txt',
-             success_url='/auth/password-reset/done/'
+             success_url=reverse_lazy('accounts:password_reset_done'),
          ),
          name='password_reset'),
 
@@ -28,7 +29,7 @@ urlpatterns = [
     path('password-reset-confirm/<uidb64>/<token>/',
          auth_views.PasswordResetConfirmView.as_view(
              template_name='auth/password_reset_confirm.html',
-             success_url='/auth/password-reset-complete/'
+             success_url=reverse_lazy('accounts:password_reset_complete'),
          ),
          name='password_reset_confirm'),
 
