@@ -122,11 +122,11 @@ class AnalyticsService:
         rows = (
             Message.objects
             .filter(conversation__user=self.user, created_at__range=(self.start, self.end))
-            .values('conversation__platform__platform_type')
+            .values('conversation__platform')
             .annotate(count=Count('id'))
         )
         return [
-            {'platform': r['conversation__platform__platform_type'] or 'unknown', 'count': r['count']}
+            {'platform': r['conversation__platform'] or 'unknown', 'count': r['count']}
             for r in rows
         ]
 
